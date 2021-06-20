@@ -1,0 +1,6 @@
+{
+	"appId": "com.mauapp.maucontacttracing",
+	"appName": "MauContactTracing",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}

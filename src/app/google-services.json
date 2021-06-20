@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1082427156885",
+    "project_id": "maucontacttracing",
+    "storage_bucket": "maucontacttracing.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082427156885:android:c12d61b1e088c5a6d66e9c",
+        "android_client_info": {
+          "package_name": "com.mauapp.maucontacttracing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1082427156885-ao0qp35ccb6k8ekb0kv1m76dfg3gfand.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJS8aJgzNU5EjKX-WlnKy9DYych6urjGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1082427156885-ao0qp35ccb6k8ekb0kv1m76dfg3gfand.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
