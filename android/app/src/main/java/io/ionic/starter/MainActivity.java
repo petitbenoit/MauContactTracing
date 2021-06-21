@@ -1,4 +1,4 @@
-package com.mauapp.maucontacttracing;
+package io.ionic.starter;
 
 import com.getcapacitor.BridgeActivity;
 
