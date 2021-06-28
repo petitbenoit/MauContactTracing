@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>register</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <form>
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked"> Full Name</ion-label>
+          <ion-input required type="text" [(ngModel)]="name" name="name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked"> Email</ion-label>
+          <ion-input required type="text" [(ngModel)]="email" name="email"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked"> Phone</ion-label>
+          <ion-input required type="tel" [(ngModel)]="phone" name="phone"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked"> Password</ion-label>
+          <ion-input required type="password" [(ngModel)]="password" name="password"></ion-input>
+        </ion-item>
+
+        <ion-button type="submit" expand="block" shape="round" (click)="register()"> Register
+          <!-- <ion-icon name="camera"></ion-icon> -->
+          <!-- <ion-label>Photo</ion-label> -->
+        </ion-button>
+        <ion-button type="submit" expand="block" shape="round" (click)="backToLogin()">Login
+          <!-- <ion-icon name="camera"></ion-icon> -->
+          <!-- <ion-label>Photo</ion-label> -->
+        </ion-button>
+
+      </ion-list>
+    </form>
+  </ion-card>
+</ion-content>
