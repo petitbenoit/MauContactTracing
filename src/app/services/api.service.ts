@@ -16,14 +16,38 @@ export class ApiService {
   private specificCountryUrl = "https://corona.lmao.ninja/v2/countries/:query?yesterday=true&strict=true&query =";
   private newsAPI = "https://newsapi.org/v2/everything?q=covid-19&sortBy=popularity&apiKey=363d365fb4c94ccaac006446b635d48b";
   
+  private worldAPI = "https://corona.lmao.ninja/v2/all?yesterday";
   // symptoms checker API
   private priaidAuthURL = "https://sandbox-authservice.priaid.ch";
   private priaidURL = "https://sandbox-healthservice.priaid.ch";
 
+  // countries 
+  private coronaAPI="https://corona-api.com/countries";
+  
   constructor(private http: HttpClient) { 
-
+    this.getToken().subscribe( data => this.token = data.Token);
   }
   
+  getMauritiusData() {
+    const uri = `${this.coronaAPI}/mu`;
+
+    const headers = new HttpHeaders()
+    .set("Access-Control-Allow-Origin", "*")
+    .set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+    .set("Access-Control-Allow-Headers", "X-Requested-With,content-type")
+    .set("Access-Control-Allow-Credentials", "true")
+    .set('Content-type', 'application/json')
+    .set('Accept', '*/*')
+    .set('x-rapidapi-key', '3f20764480msh261109a6369b196p1fb3e5jsn15fb7139b3a9')
+    .set('x-rapidapi-host', 'priaid-symptom-checker-v1.p.rapidapi.com');
+    const postData = {};
+    return this.http.get( uri ,{ headers: headers});
+  }
+
+  getWorldData() {
+    return this.http.get(this.worldAPI);
+  }
+
   getConfigToken(){
     return this.token;
   }
@@ -116,8 +140,12 @@ export class ApiService {
   // Daily news covid-19
   getDailyNews(): Observable<any> {
     // &from=2021-06-28&to=2021-06-28
-    const date = new Intl.DateTimeFormat('fr-CA').format(new Date());
-    return this.http.get(`${this.newsAPI}&from=${date}&to=${date}`);
+    const today = new Date();
+    const yesterday = new Date().setDate(today.getDate()-1);
+    const to = new Intl.DateTimeFormat('fr-CA').format(today);
+    const from = new Intl.DateTimeFormat('fr-CA').format(yesterday);
+
+    return this.http.get(`${this.newsAPI}&from=${from}&to=${to}`);
   }
 
   getDatabyCountry(name: string): Observable<any>{

@@ -37,6 +37,7 @@ import { HttpClientModule } from "@angular/common/http";
 
 // import { SplashScreen } from "@ionic-native/splash-screen/ngx";
 // import { StatusBar } from "@ionic-native/status-bar/ngx";
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -53,6 +54,7 @@ import { HttpClientModule } from "@angular/common/http";
     HttpClientModule,
   ],
   providers: [
+    InAppBrowser,
     ApiService,
     AuthenticationService,
     AuthGuard,

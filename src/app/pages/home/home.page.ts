@@ -1,3 +1,4 @@
+import { ApiService } from './../../services/api.service';
 import { AuthenticationService } from './../../services/authentication.service';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
@@ -8,6 +9,9 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
 
 import { Device } from '@ionic-native/device/ngx';
 import { Router } from '@angular/router';
+
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { promise } from 'protractor';
 
 (window as any).global = window;
 // @ts-ignore
@@ -39,10 +43,13 @@ export class HomePage implements OnInit {
   public statusMessage: string;
   public addressKey = "address";
   locationCoords: any;
+  dailyNews: [];
+  latestNews: any;
   timetest: any;
   devices: any[] = [];
   bledevices: any[]=[];
   public logmsg: string[] = [];
+  worldData: any;
 
   constructor(
     public ble: BLE,
@@ -55,7 +62,10 @@ export class HomePage implements OnInit {
     private locationAccuracy: LocationAccuracy,
     private alertController: AlertController,
     private auth: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private api: ApiService,
+    private iab: InAppBrowser
+
   ) {
     this.platform.ready().then((readySource) => {
 
@@ -80,11 +90,71 @@ export class HomePage implements OnInit {
 
   ngOnInit(
   ) {
+    this.refresh('');
+    this.api.getLatest().subscribe(data => console.log('Latest: ', data));
+    this.api.getWorldData().subscribe(data=> console.log('All', data));
+  }
+
+  async presentLogOutConfirm() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Logout',
+      message: '<strong>Do you want to logout ?</strong>',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+           
+          }
+        }, {
+          text: 'Yes',
+          handler: () => {
+            this.logout();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   logout() {
     this.auth.signOut();
     this.router.navigate(['']);
+  }
+
+  refresh(event) {
+    this.getWorldData().then(() => {
+      this.getDailyNews().then(() => {
+        if(event !== '')
+          event.target.complete();
+      });
+    });
+  }
+   
+  getWorldData() {
+    return new Promise ((resolve) => {
+      this.api.getWorldData().subscribe((data) => {
+        resolve(this.worldData = data);
+        console.log('world ', this.worldData);
+      });
+    });
+  }
+
+  getDailyNews() {
+    return new Promise((resolve) => {
+        this.api.getDailyNews().subscribe((data) => {
+        this.dailyNews = data.articles;
+        this.dailyNews.reverse();
+        this.latestNews = data.articles?data.articles[0]: null;
+        resolve(this.latestNews);
+      });
+    });
+  }
+  openLink(link) {
+    this.iab.create(link, '_self', { location: 'no'});
   }
 
   goToProfile() {

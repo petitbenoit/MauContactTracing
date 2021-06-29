@@ -34,6 +34,7 @@
     "@ionic-native/bluetooth-le": "^5.33.1",
     "@ionic-native/core": "^5.1.0",
     "@ionic-native/device": "^5.33.1",
+    "@ionic-native/in-app-browser": "^5.34.0",
     "@ionic-native/location-accuracy": "^5.33.1",
     "@ionic/angular": "^5.5.2",
     "@types/leaflet": "^1.7.3",

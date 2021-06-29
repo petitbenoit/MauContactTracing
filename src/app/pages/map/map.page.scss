@@ -2,4 +2,8 @@
     min-height: 100%;
 }
 
+ion-toolbar {
+    --background: transparent;
+    --ion-color-base: transparent !important;
+}
 //@import "~leaflet/dist/leaflet.css";

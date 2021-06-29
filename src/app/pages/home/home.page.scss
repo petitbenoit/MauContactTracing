@@ -1,0 +1,23 @@
+ion-card {
+    border-radius: 10px;
+}
+
+ion-toolbar {
+    --background: transparent;
+    --ion-color-base: transparent !important;
+ }
+
+ ion-text {
+     font-weight: bold;
+     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+     font-size:xx-large;
+}
+
+ /* Custom Skeleton Line Height and Margin */
+.custom-skeleton ion-skeleton-text {
+    line-height: 13px;
+}
+  
+.custom-skeleton ion-skeleton-text:last-child {
+    margin-bottom: 5px;
+}

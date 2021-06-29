@@ -79,6 +79,7 @@ export class MapPage implements OnInit {
             ? "<b>Province</b>: " + val.province + "<br/>"
             : ""}
             <b> Latest data:</b> ${this.datePipe.transform(val.updated)} <br/>
+            - Population: ${val?.population} <br/>
             - Total Cases: ${val.cases}<br/>
             - Active: ${val.active}<br/>
             - Recovered: ${val.recovered}<br/>
@@ -98,7 +99,7 @@ export class MapPage implements OnInit {
     // In setView add latLng and zoom
     this.map = new Map("map", {
       center: [ 25.3791924,55.4765436 ],
-      zoom: 4,
+      zoom: 5,
       renderer: canvas()
     });//.setView([28.6448, 77.216721], 4);
 

@@ -8,6 +8,8 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 
+import { DatePipe } from '@angular/common'
+
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +17,7 @@ import { HomePage } from './home.page';
     IonicModule,
     HomePageRoutingModule
   ],
-  declarations: [HomePage]
+  declarations: [HomePage],
+  providers: [DatePipe]
 })
 export class HomePageModule {}
