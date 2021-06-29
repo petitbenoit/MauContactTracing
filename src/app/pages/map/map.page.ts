@@ -3,9 +3,9 @@ import { ApiService } from "../../services/api.service";
 import { Injectable } from  '@angular/core';
 import { DatePipe } from '@angular/common';
 
-import 'leaflet';
+import { Map, circle, tileLayer, canvas} from 'leaflet';
 
-declare var L : any;
+// declare var L : any;
 
 @Injectable()
 @Component({
@@ -16,7 +16,7 @@ declare var L : any;
 export class MapPage implements OnInit {
  
   countries: any;
-  map: L.Map;
+  map: Map;
   center = [];
   constructor(
     private api: ApiService,
@@ -26,6 +26,34 @@ export class MapPage implements OnInit {
      }
 
   ngOnInit() {
+    this.api.getToken().subscribe( data => {
+      this.api.loadBodyLocations(data.Token).subscribe( result => {
+        console.log('Body location: ', result);
+      });
+
+      this.api.getSymptoms(data.Token).subscribe( res => {
+          console.log('Symptoms: ', res);
+          const dob = '1994';
+          // Diagnosis
+          this.api.loadDiagnosis(data.Token, [res[0].ID, res[6].ID], 'male', dob )
+          .subscribe( result => console.log('Diagnostic results: ', result));
+          // Specialisations
+          this.api.loadSpecialisations(data.Token, [res[0].ID, res[6].ID], 'male', dob )
+          .subscribe( result => console.log('Specialisations results: ', result));
+          // Proposed symptoms
+          this.api.loadProposedSymptoms(data.Token, [res[0].ID, res[6].ID], 'male', dob )
+          .subscribe( result => console.log('Proposed Symptoms results: ', result));
+      });
+
+        this.api.loadIssues(data.Token).subscribe(res=> {
+          console.log('Issues: ', res);
+
+          this.api.loadIssueInfo(data.Token, res[0].ID).subscribe((info) => {
+            console.log('Issues Info: ', info);
+          });
+        });
+    });
+
   }
 
   ionViewDidEnter() {
@@ -34,7 +62,7 @@ export class MapPage implements OnInit {
     this.api.getLatest().subscribe( (data) => {
       this.countries = data;
       this.countries.forEach( (val) => {
-        L.circle(
+        circle(
           [val.countryInfo['lat'], val.countryInfo['long']],
           {
             color: "red",
@@ -68,16 +96,15 @@ export class MapPage implements OnInit {
 
   loadMap() {
     // In setView add latLng and zoom
-
-    this.map = L.map('map', {
+    this.map = new Map("map", {
       center: [ 25.3791924,55.4765436 ],
       zoom: 4,
-      renderer: L.canvas()
-    });
+      renderer: canvas()
+    });//.setView([28.6448, 77.216721], 4);
 
     this.map.locate({setView: true, maxZoom: 7});
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap',
       maxZoom: 18,
       maxNativeZoom: 19

@@ -16,6 +16,10 @@ const routes: Routes = [
         loadChildren: () => import('../pages/map/map.module').then(m => m.MapPageModule)
       },
       {
+        path: 'symptoms',
+        loadChildren: () => import('../pages/symptoms-checker/symptoms-checker.module').then(m => m.SymptomsCheckerPageModule)
+      },
+      {
         path: 'about',
         loadChildren: () => import('../pages/profile/profile.module').then(m => m.ProfilePageModule)
       },

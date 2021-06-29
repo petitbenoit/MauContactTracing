@@ -32,7 +32,6 @@
               }
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
-            "scripts": ["./node_modules/leaflet/dist/leaflet.css"],
             "aot": false,
             "vendorChunk": true,
             "extractLicenses": false,

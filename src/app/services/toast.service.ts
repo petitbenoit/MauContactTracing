@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class ToastServiceService {
+export class ToastService {
   
   constructor(private toastr: ToastController) { }
 
