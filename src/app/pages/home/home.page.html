@@ -4,6 +4,7 @@
      Dashboard
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="openBLEDevices()"><ion-icon name="bluetooth-outline"></ion-icon></ion-button>
       <ion-button fill="clear" (click)="goToProfile()"><ion-icon name="person-circle-outline"></ion-icon></ion-button>
       <ion-button fill="clear" color="danger" (click)="presentLogOutConfirm()"><ion-icon name="log-out-outline"></ion-icon></ion-button>
     </ion-buttons>
@@ -85,7 +86,7 @@
         </div>
        <img *ngIf="latestNews" src="{{latestNews?.urlToImage}}" (click)="openLink(latestNews?.url)" /> 
         <ion-card-header>
-          <ion-card-subtitle>{{latestNews?.publishedAt | date:'dd MMM YYYY, H:m'}}</ion-card-subtitle>
+          <ion-card-subtitle>{{latestNews?.publishedAt | date:'dd MMM YYYY, HH:mm'}}</ion-card-subtitle>
           <ion-card-title>{{latestNews?.title}}</ion-card-title>
         </ion-card-header>
         <ion-card-content>

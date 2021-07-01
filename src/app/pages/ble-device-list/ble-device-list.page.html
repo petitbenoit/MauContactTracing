@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>BLE Scanner</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button *ngIf="!toggle" (click)="Scan()">
+        Scan
+       </ion-button>
+      <ion-button *ngIf="toggle" (click)="stopScan()">
+       Stop
+      </ion-button>
+      <ion-button (click)="cancel()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-list>
+    <ion-card-content ion-item *ngFor="let device of bleDevices">
+      <p>{{device?.name || 'Unnamed'}}</p>
+      <p>{{device?.id}}</p>
+      <p> RSSI: {{device?.rssi}}</p>
+      <p> {{device?.advertising || 'unknown'}}</p>
+    </ion-card-content> 
+  </ion-list>
+</ion-content>

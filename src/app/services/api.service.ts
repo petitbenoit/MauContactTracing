@@ -141,11 +141,20 @@ export class ApiService {
   getDailyNews(): Observable<any> {
     // &from=2021-06-28&to=2021-06-28
     const today = new Date();
-    const yesterday = new Date().setDate(today.getDate()-1);
+    const yesterday = new Date().setHours(today.getHours() - 6);
     const to = new Intl.DateTimeFormat('fr-CA').format(today);
     const from = new Intl.DateTimeFormat('fr-CA').format(yesterday);
-
-    return this.http.get(`${this.newsAPI}&from=${from}&to=${to}`);
+    console.log('from: ', from);
+    let headers = new HttpHeaders()
+    .set("Access-Control-Allow-Origin", "*")
+    .set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+    .set("Access-Control-Allow-Headers", "X-Requested-With,content-type")
+    .set("Access-Control-Allow-Credentials", "true")
+    .set("Upgrade", "HTTP/2.0")
+    .set('Connection', 'Upgrade')
+    .set('Content-type', 'application/json')
+    .set('Accept', 'application/json');
+    return this.http.get(`${this.newsAPI}&from=${from}&to=${to}`, {headers: headers});
   }
 
   getDatabyCountry(name: string): Observable<any>{

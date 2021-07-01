@@ -16,13 +16,12 @@ const routes: Routes = [
     loadChildren: () => import('./home-root/home-root.module').then(m => m.HomeRootPageModule)
   },
   {
-    path: 'map',
-    loadChildren: () => import('./pages/map/map.module').then( m => m.MapPageModule)
-  },
-  {
-    path: 'symptoms-checker',
-    loadChildren: () => import('./pages/symptoms-checker/symptoms-checker.module').then( m => m.SymptomsCheckerPageModule)
-  }
+        path: 'intro',
+        loadChildren: () =>
+          import('./pages/intro/intro.module').then(
+            m => m.IntroPageModule
+          )
+      },
 ];
 @NgModule({
   imports: [

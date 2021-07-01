@@ -98,12 +98,16 @@ export class MapPage implements OnInit {
   loadMap() {
     // In setView add latLng and zoom
     this.map = new Map("map", {
-      center: [ 25.3791924,55.4765436 ],
-      zoom: 5,
+      center: [ -20.290537322723324, 57.609424710504726 ],
+      zoom: 8,
       renderer: canvas()
     });//.setView([28.6448, 77.216721], 4);
 
-    this.map.locate({setView: true, maxZoom: 7});
+    this.map.locate({setView: true, maxZoom: 13});
+    this.map.on('click', function(e) {
+
+     // console.log(e);
+    });
 
     tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap',

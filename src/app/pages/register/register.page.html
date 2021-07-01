@@ -1,11 +1,17 @@
-<ion-header>
+<ion-header >
   <ion-toolbar>
-    <ion-title>register</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="welcome" text="Welcome"></ion-back-button>
+    </ion-buttons> 
+    <ion-buttons slot="end">
+      <ion-button (click)="backToLogin()">Login</ion-button>
+    </ion-buttons> 
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-card>
+  <ion-card class="ion-padding">
+    <ion-card-title style="text-align: center;">Register</ion-card-title>
     <form>
       <ion-list>
         <ion-item>
@@ -28,13 +34,7 @@
           <ion-input required type="password" [(ngModel)]="password" name="password"></ion-input>
         </ion-item>
 
-        <ion-button type="submit" expand="block" shape="round" (click)="register()"> Register
-          <!-- <ion-icon name="camera"></ion-icon> -->
-          <!-- <ion-label>Photo</ion-label> -->
-        </ion-button>
-        <ion-button type="submit" expand="block" shape="round" (click)="backToLogin()">Login
-          <!-- <ion-icon name="camera"></ion-icon> -->
-          <!-- <ion-label>Photo</ion-label> -->
+        <ion-button type="submit" expand="block" (click)="register()"> Register
         </ion-button>
 
       </ion-list>

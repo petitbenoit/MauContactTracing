@@ -65,7 +65,7 @@ export class AuthenticationService {
           this.afauth.signOut();
         } else {
           loading.dismiss();
-          this.router.navigateByUrl('', { replaceUrl: true});
+          this.router.navigateByUrl('/home', { replaceUrl: true});
         }
       })
       .catch( error => {

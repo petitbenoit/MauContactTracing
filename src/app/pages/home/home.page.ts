@@ -1,8 +1,10 @@
+import { BleDeviceListPage } from './../ble-device-list/ble-device-list.page';
+import { ToastService } from './../../services/toast.service';
 import { ApiService } from './../../services/api.service';
 import { AuthenticationService } from './../../services/authentication.service';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
-import { AlertController, Platform, ToastController } from '@ionic/angular';
+import { AlertController, ModalController, Platform, ToastController } from '@ionic/angular';
 import { BLE } from '@ionic-native/ble/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
@@ -58,9 +60,11 @@ export class HomePage implements OnInit {
     public platform: Platform,
     private ngZone: NgZone,
     public toastController: ToastController,
+    public toast: ToastService,
     private androidPermissions: AndroidPermissions,
     private locationAccuracy: LocationAccuracy,
     private alertController: AlertController,
+    public modalCtrl: ModalController,
     private auth: AuthenticationService,
     private router: Router,
     private api: ApiService,
@@ -84,7 +88,7 @@ export class HomePage implements OnInit {
       });
 
     });
-    this.checkGPSPermission();
+    //this.checkGPSPermission();
     this.Scan();
    }
 
@@ -93,6 +97,19 @@ export class HomePage implements OnInit {
     this.refresh('');
     this.api.getLatest().subscribe(data => console.log('Latest: ', data));
     this.api.getWorldData().subscribe(data=> console.log('All', data));
+  }
+
+  async openBLEDevices() {
+    const addModal = await this.modalCtrl.create({
+      component: BleDeviceListPage,
+      // cssClass: 'my-custom-class',
+      swipeToClose: true,
+      componentProps: {
+        'ble': this.bledevices
+      }
+    });
+
+    return await addModal.present();
   }
 
   async presentLogOutConfirm() {
@@ -139,17 +156,25 @@ export class HomePage implements OnInit {
       this.api.getWorldData().subscribe((data) => {
         resolve(this.worldData = data);
         console.log('world ', this.worldData);
+      }, error => {
+        console.log(error.message);
+        resolve(this.toast.presentToast(error.message, 'danger'));
       });
     });
   }
 
   getDailyNews() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         this.api.getDailyNews().subscribe((data) => {
         this.dailyNews = data.articles;
-        this.dailyNews.reverse();
-        this.latestNews = data.articles?data.articles[0]: null;
+        //this.dailyNews.reverse(); 
+        const sorted : any = this.dailyNews;
+        this.latestNews = sorted?sorted[0]: null;
+        console.log(sorted);
         resolve(this.latestNews);
+      }, error => {
+        console.log(error.message);
+        resolve(this.toast.presentToast(error.message, 'danger'));
       });
     });
   }
@@ -324,6 +349,13 @@ console.log(device.id, ': ', '0x'+hexStr);
         const hex = Buffer.from(mfData).toString('hex');
         const buf = Buffer.from(hex); 
         this.parseAdvertisingData(buf);
+        device.advertising = hex;
+
+        this.ngZone.run(() => {
+          //this.pushToArray(this.devices, success);
+         this.bledevices.push(device);
+          
+        });
         console.log('HEX1: ',hex);
 
         if (buf) {
@@ -368,7 +400,7 @@ for (var i=0; i < convertData.length; i++){
 }
 console.log('HEX: ', hexResult);
 
-if (hexResult) {
+/* if (hexResult) {
                 // first 2 bytes are the 16 bit UUID
                 console.log(hexResult.slice(0,2));
                 var uuidBytes = new Uint16Array(hexResult.slice(0,2));
@@ -379,7 +411,7 @@ if (hexResult) {
                 this.parseAdvertisingData(hexResult.slice(2));
                 var data = new Float32Array(hexResult.slice(2));
                 console.log(data);
-            }
+            } */
 
 //////////////////////////////////////////////////////////////////////
         var SERVICE_DATA_KEY = '0xff';
