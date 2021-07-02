@@ -43,7 +43,9 @@ export class BleScannerPage implements OnInit {
           device.advertising = hex;
 
           this.ngZone.run(() => {
-            this.bleDevices.push(device);
+            console.log(device.id+': ' , device.rssi);
+            // this.bleDevices.push(device);
+          this.pushToArray(this.bleDevices, device);
           });
       });
       this.toggle = true;
@@ -53,6 +55,16 @@ export class BleScannerPage implements OnInit {
     this.BLE.stopScan();
     this.bleDevices = [];
     this.toggle = false;
+  }
+
+  pushToArray(arr, obj) {
+    const index = arr.findIndex((e) => e.id === obj.id);
+
+    if (index === -1 && obj !== null) {
+        arr.push(obj);
+    } else {
+        arr[index] = obj;
+    }
   }
 
 }

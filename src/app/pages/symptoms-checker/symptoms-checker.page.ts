@@ -116,7 +116,12 @@ export class SymptomsCheckerPage implements OnInit {
       this.symptoms = symptoms;
       if(event !== '')
           event.target.complete();
+    }, error => {
+      console.log(error);
+      this.toast.presentToast(error.error+'.Please try again.', 'danger');
     });
+    this.diagnosisResult = [];
+    this.formSymptoms.reset();
    
   }
 

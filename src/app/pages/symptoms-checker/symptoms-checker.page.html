@@ -1,4 +1,4 @@
-<ion-header translucent>
+<ion-header translucent style="margin-bottom: 4%;">
   <ion-toolbar>
     <ion-title>Symptom Checker</ion-title>
   </ion-toolbar>
@@ -9,12 +9,13 @@
     refreshingSpinner="circles" refreshingText="updating...">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-card>
+ 
+  <ion-card class="ion-padding" style="position:fixed;width: 95%;z-index: 100;margin-top: 0;">
     <form (ngSubmit)="getDiagnosis()" [formGroup]="formSymptoms">
     <ion-list>
     <ion-item>
-      <ion-label>Select symptoms</ion-label>
-      <ion-select name="symptoms" multiple formControlName="symptoms" (ionChange)="addSymptom($event)">
+      <ion-label>Symptoms</ion-label>
+      <ion-select name="symptoms" placeholder="Select multiples" multiple formControlName="symptoms" (ionChange)="addSymptom($event)">
         <ion-select-option *ngFor="let symptom of symptoms" [value]="symptom.ID">{{symptom.Name}}
         </ion-select-option>
       </ion-select>
@@ -22,20 +23,21 @@
     </ion-list>
     <ion-item>
       <ion-label>Gender</ion-label>
-      <ion-select placeholder="Select One" name="gender" formControlName="gender">
+      <ion-select placeholder="Select" name="gender" formControlName="gender">
         <ion-select-option value="female">Female</ion-select-option>
       <ion-select-option value="male">Male</ion-select-option>
     </ion-select>
     </ion-item>
     <ion-item>
       <ion-label>Year of birth</ion-label>
-      <ion-datetime formControlName="year_of_birth" display-format="YYYY" picker-format="YYYY"></ion-datetime>
+      <ion-datetime formControlName="year_of_birth" placeholder="Select" display-format="YYYY" picker-format="YYYY"></ion-datetime>
     </ion-item>
 
     <ion-button expand="block" type="submit" [disabled]="!formSymptoms.valid">Analyse</ion-button>
     </form>
   </ion-card>
-  <div *ngIf="diagnosisResult !== undefined">
+
+  <div *ngIf="diagnosisResult !== undefined" style="margin-top: 65%;z-index: 10;">
 
   <ion-card  *ngFor="let data of diagnosisResult" >
     <ion-card-header>

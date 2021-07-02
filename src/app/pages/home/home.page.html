@@ -38,7 +38,7 @@
   </ion-list>-->
   <ion-row>
     <ion-col size="12">
-      <ion-card class="">
+      <ion-card class="" (click)="openWorldCases()">
         <ion-card-header class="ion-padding" color="light">
           <ion-card-subtitle>Total Cases</ion-card-subtitle>
           <ion-card-title><ion-text color="danger">{{worldData?.cases}}</ion-text></ion-card-title>
@@ -68,7 +68,19 @@
   </ion-row>
   <ion-row>
     <ion-col size="12">
-     <ion-title News>Latest News</ion-title> 
+      <ion-row>
+        <ion-col size="10">
+          <ion-title News>Latest News</ion-title> 
+        </ion-col>
+        <ion-col size="2">
+          <div>
+          <ion-buttons slot="end">
+            <ion-button (click)="openNewsList()"><ion-icon name="arrow-forward-circle-outline"></ion-icon></ion-button>
+          </ion-buttons>
+        </div>
+          </ion-col>
+      </ion-row>
+     
     </ion-col>
   </ion-row>
   <ion-row>
@@ -76,20 +88,22 @@
       <ion-card>
         <div *ngIf="!latestNews">
           <div class="ion-padding custom-skeleton">
-            <ion-thumbnail slot="start" width="100%">
-              <ion-skeleton-text animated></ion-skeleton-text>
-            </ion-thumbnail>
-            <ion-skeleton-text animated style="width: 100%; height: 27px" slot="start"></ion-skeleton-text>
-            <ion-skeleton-text animated></ion-skeleton-text>
-            <ion-skeleton-text animated style="width: 88%"></ion-skeleton-text>
-            <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
-            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          <div style="padding-bottom: 10px;">
+            <ion-skeleton-text animated style="width: 100%; height: 150px;border-radius: 4px;" slot="start"></ion-skeleton-text>
+          </div>
+            <ion-skeleton-text animated style="height:7px;"></ion-skeleton-text>
+            <ion-skeleton-text animated style="height:7px;"></ion-skeleton-text>
+            <ion-skeleton-text animated style="height:7px;"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 88%;height:7px;"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 70%;height:7px;"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 60%;height:7px;"></ion-skeleton-text>
           </div>
         </div>
-       <img *ngIf="latestNews" src="{{latestNews?.urlToImage}}" (click)="openLink(latestNews?.url)" /> 
+       <img *ngIf="latestNews" src="{{latestNews?.image}}" (click)="openLink(latestNews?.url)" /> 
         <ion-card-header>
+        <!--   <p>Source: {{latestNews?.source?.name}}</p> -->
           <ion-card-subtitle>{{latestNews?.publishedAt | date:'dd MMM YYYY, HH:mm'}}</ion-card-subtitle>
-          <ion-card-title>{{latestNews?.title}}</ion-card-title>
+          <ion-card-title><a (click)="openLink(latestNews?.url)" >{{latestNews?.title}}</a></ion-card-title>
         </ion-card-header>
         <ion-card-content>
           {{latestNews?.description}}

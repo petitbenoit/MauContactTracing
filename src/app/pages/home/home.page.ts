@@ -1,19 +1,23 @@
-import { BleScannerPage } from './../ble-scanner/ble-scanner.page';
-import { ToastService } from './../../services/toast.service';
-import { ApiService } from './../../services/api.service';
-import { AuthenticationService } from './../../services/authentication.service';
 import { Component, NgZone, OnInit } from '@angular/core';
-import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
 import { AlertController, ModalController, Platform, ToastController } from '@ionic/angular';
+// Angular
+import { promise } from 'protractor';
+import { Router } from '@angular/router';
+// Native
+import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
 import { BLE } from '@ionic-native/ble/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
-
 import { Device } from '@ionic-native/device/ngx';
-import { Router } from '@angular/router';
-
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { promise } from 'protractor';
+// Services
+import { ToastService } from './../../services/toast.service';
+import { ApiService } from './../../services/api.service';
+import { AuthenticationService } from './../../services/authentication.service';
+// Pages
+import { BleScannerPage } from './../ble-scanner/ble-scanner.page';
+import { NewsPage } from './../news/news.page';
+import { DatePipe } from '@angular/common';
 
 (window as any).global = window;
 // @ts-ignore
@@ -68,7 +72,8 @@ export class HomePage implements OnInit {
     private auth: AuthenticationService,
     private router: Router,
     private api: ApiService,
-    private iab: InAppBrowser
+    private iab: InAppBrowser,
+    private datePipe: DatePipe
 
   ) {
     this.platform.ready().then((readySource) => {
@@ -95,8 +100,8 @@ export class HomePage implements OnInit {
   ngOnInit(
   ) {
     this.refresh('');
-    this.api.getLatest().subscribe(data => console.log('Latest: ', data));
-    this.api.getWorldData().subscribe(data=> console.log('All', data));
+    // this.api.getLatest().subscribe(data => console.log('Latest: ', data));
+    // this.api.getWorldData().subscribe(data=> console.log('All', data));
   }
 
   async openBLEDevices() {
@@ -107,6 +112,18 @@ export class HomePage implements OnInit {
       /* componentProps: {
         'ble': this.bledevices
       } */
+    });
+
+    return await addModal.present();
+  }
+  async openNewsList() {
+    const addModal = await this.modalCtrl.create({
+      component: NewsPage,
+      // cssClass: 'my-custom-class',
+      swipeToClose: true,
+      componentProps: {
+        'news': this.dailyNews
+      } 
     });
 
     return await addModal.present();
@@ -163,18 +180,49 @@ export class HomePage implements OnInit {
     });
   }
 
+  async openWorldCases() {
+    
+    const alert = await this.alertController.create({
+      header: `World Cases`,
+      message: `
+      Updated: <b>${this.datePipe.transform(this.worldData?.updated, 'dd MMM yyyy, HH:mm')}</b><br><hr>
+      Population: <b>${this.worldData?.population}</b><br><hr>
+      Active: <b>${this.worldData?.active}</b><br>
+      Recovered: <b>${this.worldData?.recovered}</b><br>
+      Critical: <b>${this.worldData?.critical}</b><br>
+      Deaths: <b>${this.worldData?.deaths}</b><br>
+      Tests: <b>${this.worldData?.tests}</b><br>
+      <hr>
+      Today Cases: <b>${this.worldData?.todayCases}</b><br>
+      Today Recovered: <b>${this.worldData?.todayRecovered}</b><br>
+      Today Deaths: <b>${this.worldData?.todayDeaths}</b><br>
+      `,
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
   getDailyNews() {
     return new Promise((resolve, reject) => {
         this.api.getDailyNews().subscribe((data) => {
         this.dailyNews = data.articles;
+        //console.log(data);
         //this.dailyNews.reverse(); 
         const sorted : any = this.dailyNews;
         this.latestNews = sorted?sorted[0]: null;
-        console.log(sorted);
+        
         resolve(this.latestNews);
       }, error => {
-        console.log(error.message);
-        resolve(this.toast.presentToast(error.message, 'danger'));
+        console.log(error);
+        resolve(this.toast.presentToast(error?.error?.errors[0], 'danger'));
       });
     });
   }
@@ -183,7 +231,7 @@ export class HomePage implements OnInit {
   }
 
   goToProfile() {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/tabs/profile']);
   }
     //Check if application having BluetoothLE access permission
     checkBLEPermission() {

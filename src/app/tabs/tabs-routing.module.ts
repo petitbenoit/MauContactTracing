@@ -1,3 +1,4 @@
+import { AuthGuard } from './../guards/auth.guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
@@ -6,6 +7,7 @@ const routes: Routes = [
   {
     path: 'tabs',
     component: TabsPage,
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'tabs',
@@ -24,7 +26,7 @@ const routes: Routes = [
         loadChildren: () => import('../pages/symptoms-checker/symptoms-checker.module').then(m => m.SymptomsCheckerPageModule)
       },
       {
-        path: 'about',
+        path: 'profile',
         loadChildren: () => import('../pages/profile/profile.module').then(m => m.ProfilePageModule)
       }
     ]

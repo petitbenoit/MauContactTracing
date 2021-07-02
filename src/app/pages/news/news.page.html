@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>News</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="getDailyNews($event)" pullingIcon="arrow-dropdown" pullingText="update"
+    refreshingSpinner="circles" refreshingText="updating...">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-row>
+    <ion-col size="12">
+      <div *ngIf="!news" class="ion-padding custom-skeleton">
+        <ion-list >
+          <ion-item *ngFor="let number of [0,1,2,3,4]">
+          <ion-thumbnail slot="start" width="100%">
+            <ion-skeleton-text animated></ion-skeleton-text>
+          </ion-thumbnail>
+          <!-- <ion-skeleton-text animated style="width: 100%; height: 27px" slot="start"></ion-skeleton-text> -->
+          <div style="width: 100%;">
+          <ion-skeleton-text animated></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 88%"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+        </div>
+        </ion-item>
+      </ion-list>
+      </div>
+
+      <div *ngFor="let newList of news">
+        <ion-card >
+          <div *ngIf="!newList">
+            <div class="ion-padding custom-skeleton">
+              <ion-thumbnail slot="start" width="100%">
+                <ion-skeleton-text animated></ion-skeleton-text>
+              </ion-thumbnail>
+              <ion-skeleton-text animated style="width: 100%; height: 27px" slot="start"></ion-skeleton-text>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 88%"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+            </div>
+          </div>
+          <img *ngIf="newList" src="{{newList?.image}}" (click)="openLink(newList?.url)" /> 
+          <ion-card-header>
+            <ion-card-subtitle>{{newList?.publishedAt | date:'dd MMM YYYY, HH:mm'}}</ion-card-subtitle>
+            <ion-card-title><a (click)="openLink(newList?.url)" >{{newList?.title}}</a></ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            {{newList?.description}}
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>

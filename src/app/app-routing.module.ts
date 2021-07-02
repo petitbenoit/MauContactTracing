@@ -1,9 +1,5 @@
-import { AuthGuard } from './guards/auth.guard';
-import { AutoLoginGuard } from './guards/auto-login.guard';
-import { IntroGuard } from './guards/intro.guard';
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes, CanActivate } from '@angular/router';
-import { HomeGuard } from './guards/home.guard';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
@@ -16,16 +12,12 @@ const routes: Routes = [
     loadChildren: () => import('./home-root/home-root.module').then(m => m.HomeRootPageModule)
   },
   {
-        path: 'intro',
-        loadChildren: () =>
-          import('./pages/intro/intro.module').then(
-            m => m.IntroPageModule
-          )
-      },
-  /* {
-    path: 'ble-scanner',
-    loadChildren: () => import('./pages/ble-scanner/ble-scanner.module').then( m => m.BleScannerPageModule)
-  }, */
+    path: 'intro',
+    loadChildren: () =>
+      import('./pages/intro/intro.module').then(
+        m => m.IntroPageModule
+      )
+  }
 ];
 @NgModule({
   imports: [

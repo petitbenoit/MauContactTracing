@@ -27,21 +27,7 @@ const routes: Routes = [
             {
                 path: 'symptoms',
                 loadChildren: () => import('../pages/symptoms-checker/symptoms-checker.module').then(m => m.SymptomsCheckerPageModule)
-            },
-            {
-                path: 'profile',
-                loadChildren: () =>
-                    import('../pages/profile/profile.module').then(
-                        m => m.ProfilePageModule
-                    )
-            },
-            {
-              path: 'change-password',
-              loadChildren: () =>
-                  import('../pages/change-password/change-password.module').then(
-                      m => m.ChangePasswordPageModule
-                  )
-            },  
+            }, 
             {
               path: 'profile',
               loadChildren: () =>
@@ -59,7 +45,18 @@ const routes: Routes = [
             {
                 path: 'ble-scanner',
                 loadChildren: () => import('../pages/ble-scanner/ble-scanner.module').then( m => m.BleScannerPageModule)
-            }   
+            },
+            {
+                path: 'news',
+                loadChildren: () => import('../pages/news/news.module').then( m => m.NewsPageModule)
+            },
+            {
+              path: 'change-password',
+              loadChildren: () =>
+                  import('../pages/change-password/change-password.module').then(
+                      m => m.ChangePasswordPageModule
+                  )
+            } 
         ]
   },
   {
@@ -70,7 +67,7 @@ const routes: Routes = [
     {
         path: 'tabs',
         loadChildren: () => import('../tabs/tabs.module').then( m => m.TabsPageModule)
-    }
+    } 
 ];
 
 @NgModule({
