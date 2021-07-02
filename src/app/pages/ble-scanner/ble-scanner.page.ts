@@ -1,24 +1,26 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { BLE } from '@ionic-native/ble/ngx';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { ModalController, NavParams, Platform } from '@ionic/angular';
+import { BLE } from '@ionic-native/ble/ngx';
 
 @Component({
-  selector: 'app-ble-device-list',
-  templateUrl: './ble-device-list.page.html',
-  styleUrls: ['./ble-device-list.page.scss'],
+  selector: 'app-ble-scanner',
+  templateUrl: './ble-scanner.page.html',
+  styleUrls: ['./ble-scanner.page.scss'],
 })
-export class BleDeviceListPage implements OnInit {
+export class BleScannerPage implements OnInit {
   bleDevices: any[]=[];
   toggle = true;
 
-  constructor(
-    public navParams: NavParams,
+  constructor(public navParams: NavParams,
     public modalCtrl: ModalController,
     public platform: Platform,
     public BLE: BLE,
     public ngZone: NgZone) { 
       // this.bleDevices = navParams.get('ble');
       this.platform.ready().then((readySource) => {
+        this.BLE.isLocationEnabled().then( (res)=> {
+          console.log('Location enabled: ', res);
+        }); 
         this.BLE.enable();
       });
     }
@@ -52,4 +54,5 @@ export class BleDeviceListPage implements OnInit {
     this.bleDevices = [];
     this.toggle = false;
   }
+
 }

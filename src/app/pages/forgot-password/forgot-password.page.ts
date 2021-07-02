@@ -2,6 +2,7 @@ import { LoadingController, ToastController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-forgot-password',
@@ -10,19 +11,24 @@ import { Router } from '@angular/router';
 })
 export class ForgotPasswordPage implements OnInit {
   email: string;
-
+  reset: FormGroup;
   constructor(
     private afauth: AngularFireAuth,
     private toastr: ToastController,
     private router: Router,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit() {
+    this.reset = this.fb.group({
+      email: ['', [Validators.required, Validators.email]]
+     /*  password: ['', [Validators.required, Validators.minLength(6)]] */
+    });
   }
 
   async resetPassword() {
-    if (this.email) {
+    if (this.reset.value.email !== '') {
       const loading = await this.loadingCtrl.create({
         message: 'Sending reset password link...',
         spinner: 'crescent',

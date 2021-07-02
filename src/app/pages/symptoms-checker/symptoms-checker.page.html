@@ -5,6 +5,10 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)" pullingIcon="arrow-dropdown" pullingText="update"
+    refreshingSpinner="circles" refreshingText="updating...">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-card>
     <form (ngSubmit)="getDiagnosis()" [formGroup]="formSymptoms">
     <ion-list>
@@ -35,19 +39,56 @@
 
   <ion-card  *ngFor="let data of diagnosisResult" >
     <ion-card-header>
-      <ion-card-title>{{data.Issue['Name']}} (Rank. {{data.Issue['Ranking']}})</ion-card-title>
+      <ion-card-title>{{data.Issue['Name']}} (Accuracy: {{data.Issue['Accuracy'] ?data.Issue['Accuracy']+"%":"N/A"}})</ion-card-title>
       <ion-card-subtitle>{{data.Issue['ProfName']}}</ion-card-subtitle>
     </ion-card-header>
   
     <ion-card-content>
-     <ion-list>
-      <ion-list-header lines="full">
-        <ion-label>Specialisation : </ion-label>
-      </ion-list-header>
-      <ion-item *ngFor="let spec of data.Specialisation">
-        <ion-label>{{spec.Name}}</ion-label>
-      </ion-item>
-    </ion-list>
+      <p>{{data?.Issue['INFO']?.Description}}</p>
+      <ion-card *ngIf="data?.Issue['INFO']?.PossibleSymptoms">
+        <ion-card-header>
+        <!--   <ion-card-subtitle>Awesome Subtitle</ion-card-subtitle> -->
+          <ion-card-title>Possible Symptoms</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          {{data?.Issue['INFO']?.PossibleSymptoms}}
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngIf="data?.Issue['INFO']?.Synonyms">
+        <ion-card-header>
+    
+          <ion-card-title>Synonyms</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          {{data?.Issue['INFO']?.Synonyms}}
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngIf="data?.Issue['INFO']?.TreatmentDescription">
+        <ion-card-header>
+      
+          <ion-card-title>Treatment</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          {{data?.Issue['INFO']?.TreatmentDescription}}
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+      
+          <ion-card-title>Specialisation</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ul>
+            <div *ngFor="let spec of data.Specialisation">
+              <li>{{spec.Name}}</li>
+            </div>
+          </ul>
+        </ion-card-content>
+      </ion-card>
+     
     </ion-card-content>
   </ion-card>
 

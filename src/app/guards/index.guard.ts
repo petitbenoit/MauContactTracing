@@ -26,8 +26,8 @@ export class IndexGuard implements CanActivate {
             this.afauth.authState.subscribe( (user) => {
               // console.log(user);
               if (user !== null) {
-                this.router.navigateByUrl('/home', { replaceUrl: true});
-                resolve(true);
+                this.router.navigateByUrl('/tabs/home', { replaceUrl: true});
+                resolve(false);
               } else {
                 resolve(true);
               }

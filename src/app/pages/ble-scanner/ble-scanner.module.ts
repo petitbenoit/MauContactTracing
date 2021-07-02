@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { BleDeviceListPageRoutingModule } from './ble-device-list-routing.module';
+import { BleScannerPageRoutingModule } from './ble-scanner-routing.module';
 
-import { BleDeviceListPage } from './ble-device-list.page';
+import { BleScannerPage } from './ble-scanner.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    BleDeviceListPageRoutingModule
+    BleScannerPageRoutingModule
   ],
-  declarations: [BleDeviceListPage]
+  declarations: [BleScannerPage]
 })
-export class BleDeviceListPageModule {}
+export class BleScannerPageModule {}

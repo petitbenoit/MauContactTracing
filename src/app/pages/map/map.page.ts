@@ -103,7 +103,7 @@ export class MapPage implements OnInit {
       renderer: canvas()
     });//.setView([28.6448, 77.216721], 4);
 
-    this.map.locate({setView: true, maxZoom: 13});
+    this.map.locate({setView: true, maxZoom: 8});
     this.map.on('click', function(e) {
 
      // console.log(e);

@@ -22,6 +22,10 @@ const routes: Routes = [
             m => m.IntroPageModule
           )
       },
+  /* {
+    path: 'ble-scanner',
+    loadChildren: () => import('./pages/ble-scanner/ble-scanner.module').then( m => m.BleScannerPageModule)
+  }, */
 ];
 @NgModule({
   imports: [

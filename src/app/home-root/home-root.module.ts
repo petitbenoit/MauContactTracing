@@ -15,7 +15,7 @@ import { HomeRootPage } from './home-root.page';
     FormsModule,
     IonicModule,
     HomeRootPageRoutingModule,
-    //TabsPageRoutingModule
+    TabsPageRoutingModule
   ],
   declarations: [HomeRootPage]
 })

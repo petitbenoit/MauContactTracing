@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { BleDeviceListPage } from './ble-device-list.page';
+import { BleScannerPage } from './ble-scanner.page';
 
-describe('BleDeviceListPage', () => {
-  let component: BleDeviceListPage;
-  let fixture: ComponentFixture<BleDeviceListPage>;
+describe('BleScannerPage', () => {
+  let component: BleScannerPage;
+  let fixture: ComponentFixture<BleScannerPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ BleDeviceListPage ],
+      declarations: [ BleScannerPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(BleDeviceListPage);
+    fixture = TestBed.createComponent(BleScannerPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

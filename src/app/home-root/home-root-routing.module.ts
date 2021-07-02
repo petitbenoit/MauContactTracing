@@ -1,4 +1,3 @@
-import { AuthGuard } from './../guards/auth.guard';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -11,6 +10,10 @@ const routes: Routes = [
     component: HomeRootPage,
     canActivate: [HomeGuard],
         children: [
+            {
+                path: 'tabs',
+                loadChildren: () => import('../tabs/tabs.module').then( m => m.TabsPageModule)
+            },
             {
                 path: 'home',
                 loadChildren: () =>
@@ -52,14 +55,22 @@ const routes: Routes = [
                   import('../pages/profile-edit/profile-edit.module').then(
                       m => m.ProfileEditPageModule
                   )
-            },                
+            },   
             {
-                path: '',
-                redirectTo: '/home',
-                pathMatch: 'full'
-            }
+                path: 'ble-scanner',
+                loadChildren: () => import('../pages/ble-scanner/ble-scanner.module').then( m => m.BleScannerPageModule)
+            }   
         ]
-  }
+  },
+  {
+    path: '',
+    redirectTo: '/tabs',
+    pathMatch: 'full'
+    },
+    {
+        path: 'tabs',
+        loadChildren: () => import('../tabs/tabs.module').then( m => m.TabsPageModule)
+    }
 ];
 
 @NgModule({

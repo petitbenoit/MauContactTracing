@@ -146,14 +146,14 @@ export class ApiService {
     const from = new Intl.DateTimeFormat('fr-CA').format(yesterday);
     console.log('from: ', from);
     let headers = new HttpHeaders()
-    .set("Access-Control-Allow-Origin", "*")
+   /*  .set("Access-Control-Allow-Origin", "*")
     .set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
     .set("Access-Control-Allow-Headers", "X-Requested-With,content-type")
     .set("Access-Control-Allow-Credentials", "true")
     .set("Upgrade", "HTTP/2.0")
     .set('Connection', 'Upgrade')
     .set('Content-type', 'application/json')
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json'); */
     return this.http.get(`${this.newsAPI}&from=${from}&to=${to}`, {headers: headers});
   }
 

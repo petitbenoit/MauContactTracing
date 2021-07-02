@@ -32,7 +32,7 @@ export class SymptomsCheckerPage implements OnInit {
       year_of_birth: ['', [Validators.required]]
     });
 
-    this.refresh();
+    this.refresh('');
     this.api.getToken().subscribe( data => {
       console.log('Token: ', data.Token);
       this.api.loadBodyLocations(data.Token).subscribe( result => {
@@ -80,16 +80,22 @@ export class SymptomsCheckerPage implements OnInit {
     const yob = new Date(diagnosis.year_of_birth).getFullYear();
 
     this.api.loadDiagnosis(this.api.getConfigToken(), diagnosis.symptoms, diagnosis.gender, yob)
-    .subscribe( result => {
+    .subscribe((result)=>{
       loading.dismiss();
-      this.diagnosisResult = result;
       console.log(result);
+      this.diagnosisResult = result;
+
       if (result[0] === undefined) {
         this.toast.presentToast('No result found!', 'warning');
       } else {
-        /* this.api.loadIssueInfo(this.api.getConfigToken(), res[0].ID).subscribe((info) => {
-          console.log('Issues Info: ', info);
-        }); */
+        this.diagnosisResult.map((record) => {
+          if (record.Issue['ID'] !== undefined) {
+            this.api.loadIssueInfo(this.api.getConfigToken(), record.Issue['ID']).toPromise().then((info) => {
+              record.Issue.INFO = info;
+              console.log(info);
+            });
+          }
+        });
       }
     }, error => {
       loading.dismiss();
@@ -97,33 +103,21 @@ export class SymptomsCheckerPage implements OnInit {
     });
    
   }
-  async refresh() {
-    const loading = await this.loadingCtrl.create({
+  async refresh(event) {
+    /* const loading = await this.loadingCtrl.create({
       message: 'Please wait..',
       spinner: 'crescent',
       showBackdrop: true,
       duration: 2000
     });
-    loading.present();
+    loading.present(); */
 
     this.api.getSymptoms(this.api.getConfigToken()).subscribe((symptoms) => {
       this.symptoms = symptoms;
-      loading.dismiss();
+      if(event !== '')
+          event.target.complete();
     });
-   // this.loading = true;
-    /* setTimeout(() => {
-      this.api.getSymptoms().subscribe(
-        data => {
-          this.latest = data["latest"];
-          this.loading = false;
-          this.toast.presentToast("Refreshing..", 'success');
-        },
-        error => {
-          this.toastr("Ocorreu um erro ao atualizar os dados");
-        }
-      );
-      event.target.complete();
-    }, 1000); */
+   
   }
 
 }

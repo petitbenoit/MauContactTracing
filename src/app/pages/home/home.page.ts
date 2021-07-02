@@ -1,4 +1,4 @@
-import { BleDeviceListPage } from './../ble-device-list/ble-device-list.page';
+import { BleScannerPage } from './../ble-scanner/ble-scanner.page';
 import { ToastService } from './../../services/toast.service';
 import { ApiService } from './../../services/api.service';
 import { AuthenticationService } from './../../services/authentication.service';
@@ -101,12 +101,12 @@ export class HomePage implements OnInit {
 
   async openBLEDevices() {
     const addModal = await this.modalCtrl.create({
-      component: BleDeviceListPage,
+      component: BleScannerPage,
       // cssClass: 'my-custom-class',
       swipeToClose: true,
-      componentProps: {
+      /* componentProps: {
         'ble': this.bledevices
-      }
+      } */
     });
 
     return await addModal.present();
@@ -139,7 +139,7 @@ export class HomePage implements OnInit {
 
   logout() {
     this.auth.signOut();
-    this.router.navigate(['']);
+    this.router.navigate(['login']);
   }
 
   refresh(event) {

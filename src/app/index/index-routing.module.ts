@@ -10,12 +10,6 @@ const routes: Routes = [
     component: IndexPage,
     canActivate: [IndexGuard],
     children: [
-       {
-      path: '',
-      loadChildren: () => 
-        import('../pages/welcome/welcome.module').then(m => m.WelcomePageModule)
-      //  canActivate: [IntroGuard]
-      }, 
       /* {
         path: 'intro',
         loadChildren: () =>
@@ -42,13 +36,12 @@ const routes: Routes = [
         path:'reset-password',
         loadChildren: () =>
           import('../pages/forgot-password/forgot-password.module').then(m => m.ForgotPasswordPageModule)
-      }               
-      /* {
+      } ,              
+       {
           path: '',
-          redirectTo: '/login',
-          pathMatch: 'full',
-          canActivate: [IntroGuard]
-      } */
+          redirectTo: '/welcome',
+          pathMatch: 'full'
+      } 
   ]
   }
 ];

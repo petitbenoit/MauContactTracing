@@ -51,7 +51,8 @@
       <ion-card color="danger" button>
         <ion-card-header>
           <ion-card-subtitle>Deaths</ion-card-subtitle>
-          <ion-card-title>{{worldData?.deaths}}</ion-card-title>
+          <ion-card-title *ngIf="worldData?.deaths">{{worldData?.deaths}}</ion-card-title>
+          <ion-card-title *ngIf="!(worldData?.deaths)"><ion-skeleton-text animated style="width: 80%; height: 10px;"></ion-skeleton-text></ion-card-title>
         </ion-card-header>
       </ion-card>
     </ion-col> 
@@ -59,7 +60,8 @@
       <ion-card color="success" button>
         <ion-card-header>
           <ion-card-subtitle>Recovered</ion-card-subtitle>
-          <ion-card-title>{{worldData?.recovered}}</ion-card-title>
+          <ion-card-title *ngIf="worldData?.recovered">{{worldData?.recovered}}</ion-card-title>
+          <ion-card-title *ngIf="!(worldData?.recovered)"><ion-skeleton-text animated style="width: 70%; height: 10px;"></ion-skeleton-text></ion-card-title>
         </ion-card-header>
       </ion-card>
     </ion-col> 
