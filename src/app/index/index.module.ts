@@ -1,3 +1,4 @@
+import { IndexRouter } from './index.router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +14,8 @@ import { IndexPage } from './index.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    IndexPageRoutingModule
+    //IndexPageRoutingModule
+    IndexRouter
   ],
   declarations: [IndexPage]
 })

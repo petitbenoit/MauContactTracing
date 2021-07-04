@@ -36,6 +36,10 @@ export class NewsPage implements OnInit {
     this.api.getDailyNews().subscribe((data) => {
      /*  loading.dismiss(); */
       this.news = data.articles;
+      this.news.sort((a:any, b:any) => {
+        return +new Date(a.published_date) - +new Date(b.published_date);
+      }); 
+      this.news.reverse();
       if (event!=='')
         event.target.complete();
     }, error => {

@@ -1,8 +1,9 @@
 import { ApiService } from './../../services/api.service';
 import { ToastService } from '../../services/toast.service';
 import { Component, OnInit } from '@angular/core';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SymptomsInputPage } from '../symptoms-input/symptoms-input.page';
 
 @Component({
   selector: 'app-symptoms-checker',
@@ -21,7 +22,8 @@ export class SymptomsCheckerPage implements OnInit {
     private toast: ToastService, 
     private loadingCtrl: LoadingController, 
     private api: ApiService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private modalCtrl: ModalController
     ) { }
 
   ngOnInit() {
@@ -124,5 +126,15 @@ export class SymptomsCheckerPage implements OnInit {
     this.formSymptoms.reset();
    
   }
+
+  async openSymptomsEditor() {
+    const addModal = await this.modalCtrl.create({
+      component: SymptomsInputPage,
+      swipeToClose: true
+    });
+
+    return await addModal.present();
+  }
+
 
 }

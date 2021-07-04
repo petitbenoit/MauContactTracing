@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: '',
     component: IndexPage,
-    canActivate: [IndexGuard],
+    //canActivate: [IndexGuard],
     children: [
       /* {
         path: 'intro',

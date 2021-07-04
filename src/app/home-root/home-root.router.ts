@@ -1,21 +1,16 @@
-import { TabsPageModule } from './../tabs/tabs.module';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { RouterModule, Routes } from '@angular/router';
 import { HomeRootPage } from './home-root.page';
 import { HomeGuard } from '../guards/home.guard';
+// import { UserDataResolver } from '../resolvers/userData.resolver';
+// import { AdminGuard } from '../guards/admin.guard';
 
 const routes: Routes = [
-  {
-    path: 'home',
-    component: HomeRootPage,
-    canActivate: [HomeGuard],
+    {
+        path: 'home',
+        component: HomeRootPage,
+        canActivate: [HomeGuard],
         children: [
-            {
-                path: 'tabs',
-                loadChildren: () =>
-                    import('../tabs/tabs.module').then(m => m.TabsPageModule)
-            },
             {
                 path: 'dashboard',
                 loadChildren: () =>
@@ -53,32 +48,28 @@ const routes: Routes = [
                 loadChildren: () => import('../pages/news/news.module').then( m => m.NewsPageModule)
             },
             {
-              path: 'change-password',
-              loadChildren: () =>
+                path: 'change-password',
+                loadChildren: () =>
                   import('../pages/change-password/change-password.module').then(
                       m => m.ChangePasswordPageModule
                   )
             },
             {
                 path: '',
-                redirectTo: 'tabs',
+                redirectTo: 'home/dashboard',
                 pathMatch: 'full'
-            }
+            } 
         ]
-  },
-  {
-    path: '',
-    redirectTo: 'home/tabs',
-    pathMatch: 'full'
     },
     {
-        path: 'tabs',
-        loadChildren: () => import('../tabs/tabs.module').then( m => m.TabsPageModule)
+        path: '',
+        redirectTo: 'home/dashboard',
+        pathMatch: 'full'
     } 
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+imports: [RouterModule.forChild(routes)],
+exports: [RouterModule]
 })
-export class HomeRootPageRoutingModule {}
+export class HomeRootRouter {}

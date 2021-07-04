@@ -1,0 +1,131 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Your symptoms</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)" pullingIcon="arrow-dropdown" pullingText="update"
+    refreshingSpinner="circles" refreshingText="updating...">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-card class="ion-padding">
+    <ion-row size='12'>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="float">Read mode</ion-label>
+          <ion-toggle [(ngModel)]="readonly" (ngModelChange)="readOnly($event)" class="form-control"></ion-toggle>
+        </ion-item>
+        <div class="ion-padding" style="color: darkgreen;">Toggle off to add your symptoms.</div>
+      </ion-col>
+
+    </ion-row>
+  </ion-card>
+
+  <ion-card class="ion-padding">
+    <ion-row size='12'>
+      <ion-col size="12" *ngIf="symptoms.updatedAt">
+        <ion-item>
+          <ion-label position="float">Last updated :</ion-label>
+          <ion-input readonly value="{{symptoms.updatedAt | date:'dd MMM yyyy, HH:mm' }}"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <form (ngSubmit)="setSymptoms()" [formGroup]="formAdd">
+      <ion-list>
+        
+        <ion-row size='12'>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label position="float">Set private</ion-label>
+              <ion-toggle formControlName="private" class="form-control"></ion-toggle>
+            </ion-item>
+            <div style="color: rgb(100, 57, 0);padding-left: 5%;padding-top:1%;padding-bottom: 0;">Toggle on to set your information private.</div>
+          </ion-col>
+
+        </ion-row>
+        <ion-row size='12'>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label position="float">Fever</ion-label>
+              <ion-toggle formControlName="fever" class="form-control"></ion-toggle>
+            </ion-item>
+          </ion-col>
+
+        </ion-row>
+        
+        <ion-row size="12">
+          <ion-item style="width: 100%;">
+            <ion-col size="10">
+              <ion-label position="float">Temperature (°C)</ion-label>
+            </ion-col>
+            <ion-col size="2">
+              <ion-input formControlName="temp" type="number" min="35" max="45"></ion-input>
+            </ion-col>
+        </ion-item>
+        </ion-row>
+        
+        <ion-row size='12'>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label position="float">Cough</ion-label>
+              <ion-toggle formControlName="cough" class="form-control"></ion-toggle>
+            </ion-item>
+          </ion-col>
+
+        </ion-row>
+
+        <ion-row size='12'>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label position="float">Difficult to breath</ion-label>
+              <ion-toggle formControlName="DiffToBreath" class="form-control"></ion-toggle>
+            </ion-item>
+          </ion-col>
+
+        </ion-row>
+        
+        <ion-row size='12'>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label position="float">Sore Throat</ion-label>
+              <ion-toggle formControlName="soreThroat" class="form-control"></ion-toggle>
+            </ion-item>
+          </ion-col>
+
+        </ion-row>
+
+        <ion-row size='12'>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label position="float">Headache</ion-label>
+              <ion-toggle formControlName="headache" class="form-control"></ion-toggle>
+            </ion-item>
+          </ion-col>
+
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label position="stacked">Remarks</ion-label>
+              <ion-textarea
+                formControlName="remarks">
+              </ion-textarea>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+      </ion-list>
+      <ion-button *ngIf="symptoms.updatedAt" type="submit" expand="block" [disabled]="(!formAdd.valid)" >Update</ion-button>
+      <ion-button *ngIf="!symptoms.updatedAt" type="submit" expand="block" [disabled]="(!formAdd.valid)" >Add</ion-button>
+    </form>
+  </ion-card>
+</ion-content>

@@ -1,14 +1,16 @@
+import { StorageService } from './storage.service';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { Injectable } from '@angular/core';
 import { User } from './../models/user';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AuthConstants } from './../config/auth-constants';
 // import * as firebase from 'firebase';
 
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
-import { map, tap, switchMap } from 'rxjs/operators';
+import { map, tap, switchMap, take } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
@@ -31,7 +33,8 @@ export class AuthenticationService {
     private afauth: AngularFireAuth,
     private router: Router,
     private loadingCtrl: LoadingController,
-    private toastr: ToastController
+    private toastr: ToastController,
+    private storageService: StorageService
     ) {
       this.user$ = this.afauth.authState
       .pipe(
@@ -64,8 +67,19 @@ export class AuthenticationService {
           this.toast('Please verify your email address!', 'warning');
           this.afauth.signOut();
         } else {
-          loading.dismiss();
-          this.router.navigateByUrl('', { replaceUrl: true});
+          console.log(this.user$.subscribe( data => console.log(data)));
+            this.user$
+            .subscribe( (user:any) => {
+            this.storageService.store(AuthConstants.AUTH, {uid: data?.user.uid, role : user?.role});
+              if (user.role !== undefined) {
+                loading.dismiss();
+                this.router.navigate(['admin']);
+              } else {
+                loading.dismiss();
+                this.router.navigateByUrl('/home/dashboard', { replaceUrl: true});
+              }
+          });
+          
         }
       })
       .catch( error => {

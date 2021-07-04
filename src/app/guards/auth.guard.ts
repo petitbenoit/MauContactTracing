@@ -21,10 +21,11 @@ export class AuthGuard implements CanActivate {
       take(1),
       map(user => user ? true: false),
       tap(isLoggedIn => {
+        console.log('auth');
         if (isLoggedIn) {
           return true;
         }
-        this.router.navigateByUrl('', { replaceUrl: true});
+        this.router.navigateByUrl('/login', { replaceUrl: true});
         return false;
       })
     ); 

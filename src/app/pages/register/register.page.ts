@@ -53,7 +53,6 @@ this.router.navigate(['/login']);
           .then(() => {
             loading.dismiss();
             this.toast('Registration Success! Please check your email!', 'success');
-            this.router.navigateByUrl('/login', { replaceUrl: true});
           })
           .catch( error => {
             loading.dismiss();

@@ -21,6 +21,8 @@ export class ApiService {
   private priaidAuthURL = "https://sandbox-authservice.priaid.ch";
   private priaidURL = "https://sandbox-healthservice.priaid.ch";
 
+  private freeNews = "https://free-news.p.rapidapi.com/v1/search?q=covid-19&lang=en";
+
   // countries 
   private coronaAPI="https://corona-api.com/countries";
   
@@ -150,6 +152,8 @@ export class ApiService {
     
     //console.log('from: ', from);
     let headers = new HttpHeaders()
+    .set('x-rapidapi-key', '3f20764480msh261109a6369b196p1fb3e5jsn15fb7139b3a9')
+    .set('x-rapidapi-host', 'free-news.p.rapidapi.com');
     /* .set('Content-type', 'application/json')
     .set('Accept', 'application/json'); */
    /*  .set("Access-Control-Allow-Origin", "*")
@@ -160,8 +164,8 @@ export class ApiService {
     .set('Connection', 'Upgrade')
     .set('Content-type', 'application/json')
     .set('Accept', 'application/json'); */
-    console.log(`${this.gNewsAPI}&from=${from}`);
-    return this.http.get(`${this.gNewsAPI}&from=${from}`, {headers: headers});
+    console.log(`${this.freeNews}&from=${from}`);
+    return this.http.get(`${this.freeNews}`, {headers: headers});
   }
 
   getDatabyCountry(name: string): Observable<any>{

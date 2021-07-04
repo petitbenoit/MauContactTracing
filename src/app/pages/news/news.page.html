@@ -49,13 +49,13 @@
               <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
             </div>
           </div>
-          <img *ngIf="newList" src="{{newList?.image}}" (click)="openLink(newList?.url)" /> 
+          <img *ngIf="newList" src="{{newList?.media}}" (click)="openLink(newList?.link)" /> 
           <ion-card-header>
-            <ion-card-subtitle>{{newList?.publishedAt | date:'dd MMM YYYY, HH:mm'}}</ion-card-subtitle>
-            <ion-card-title><a (click)="openLink(newList?.url)" >{{newList?.title}}</a></ion-card-title>
+            <ion-card-subtitle>{{newList?.published_date | date:'dd MMM YYYY, HH:mm'}}</ion-card-subtitle>
+            <ion-card-title><a (click)="openLink(newList?.link)" >{{newList?.title}}</a></ion-card-title>
           </ion-card-header>
-          <ion-card-content>
-            {{newList?.description}}
+          <ion-card-content style="text-align: justify;">
+            {{newList?.summary}}
           </ion-card-content>
         </ion-card>
       </div>

@@ -7,14 +7,10 @@ const routes: Routes = [
   {
     path: 'tabs',
     component: TabsPage,
-    canActivate: [AuthGuard],
+   // canActivate: [AuthGuard],
     children: [
       {
-        path: 'tabs',
-        redirectTo: '/tabs/(home:home)'
-      },
-      {
-        path: 'home',
+        path: 'dashboard',
         loadChildren: () => import('../pages/home/home.module').then(m => m.HomePageModule)
       },
       {
@@ -28,12 +24,17 @@ const routes: Routes = [
       {
         path: 'profile',
         loadChildren: () => import('../pages/profile/profile.module').then(m => m.ProfilePageModule)
-      }
+      },
+      {
+        path: '',
+        redirectTo: 'home/tabs/dashboard',
+        pathMatch: 'full'
+      } 
     ]
   },
   {
-    path: '',
-    redirectTo: '/tabs/(home:home)',
+    path: '/home/tabs',
+    redirectTo: 'tabs/dashboard',
     pathMatch: 'full'
   }
 ];

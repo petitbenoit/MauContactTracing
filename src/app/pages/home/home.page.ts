@@ -1,3 +1,4 @@
+import { StorageService } from './../../services/storage.service';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { AlertController, ModalController, Platform, ToastController } from '@ionic/angular';
 // Angular
@@ -18,6 +19,8 @@ import { AuthenticationService } from './../../services/authentication.service';
 import { BleScannerPage } from './../ble-scanner/ble-scanner.page';
 import { NewsPage } from './../news/news.page';
 import { DatePipe } from '@angular/common';
+// config
+import { AuthConstants } from './../../config/auth-constants';
 
 (window as any).global = window;
 // @ts-ignore
@@ -73,7 +76,8 @@ export class HomePage implements OnInit {
     private router: Router,
     private api: ApiService,
     private iab: InAppBrowser,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private storageService: StorageService
 
   ) {
     this.platform.ready().then((readySource) => {
@@ -155,8 +159,10 @@ export class HomePage implements OnInit {
   }
 
   logout() {
-    this.auth.signOut();
-    this.router.navigate(['login']);
+    // this.storageService.removeStorageItem(AuthConstants.AUTH).then(res => {
+      this.auth.signOut();
+      this.router.navigateByUrl('/login',  { replaceUrl: true});
+    // });
   }
 
   refresh(event) {
@@ -214,10 +220,17 @@ export class HomePage implements OnInit {
     return new Promise((resolve, reject) => {
         this.api.getDailyNews().subscribe((data) => {
         this.dailyNews = data.articles;
+        
+        this.dailyNews.sort((a:any, b:any) => {
+          return +new Date(a.published_date) - +new Date(b.published_date);
+        }); 
+       
         //console.log(data);
-        //this.dailyNews.reverse(); 
-        const sorted : any = this.dailyNews;
-        this.latestNews = sorted?sorted[0]: null;
+        //this.dailyNews.reverse();
+       
+        const reversed = this.dailyNews.reverse();
+        // console.log('HERE -> ' ,reversed);
+        this.latestNews =  reversed[0];
         
         resolve(this.latestNews);
       }, error => {
@@ -231,7 +244,7 @@ export class HomePage implements OnInit {
   }
 
   goToProfile() {
-    this.router.navigate(['/tabs/profile']);
+    this.router.navigate(['/home/profile']);
   }
     //Check if application having BluetoothLE access permission
     checkBLEPermission() {

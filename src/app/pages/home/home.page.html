@@ -99,14 +99,14 @@
             <ion-skeleton-text animated style="width: 60%;height:7px;"></ion-skeleton-text>
           </div>
         </div>
-       <img *ngIf="latestNews" src="{{latestNews?.image}}" (click)="openLink(latestNews?.url)" /> 
+       <img *ngIf="latestNews" src="{{latestNews?.media}}" (click)="openLink(latestNews?.link)" /> 
         <ion-card-header>
         <!--   <p>Source: {{latestNews?.source?.name}}</p> -->
-          <ion-card-subtitle>{{latestNews?.publishedAt | date:'dd MMM YYYY, HH:mm'}}</ion-card-subtitle>
-          <ion-card-title><a (click)="openLink(latestNews?.url)" >{{latestNews?.title}}</a></ion-card-title>
+          <ion-card-subtitle>{{latestNews?.published_date | date:'dd MMM YYYY, HH:mm'}}</ion-card-subtitle>
+          <ion-card-title><a (click)="openLink(latestNews?.link)" >{{latestNews?.title}}</a></ion-card-title>
         </ion-card-header>
-        <ion-card-content>
-          {{latestNews?.description}}
+        <ion-card-content style="text-align: justify;">
+          {{latestNews?.summary}}
         </ion-card-content>
       </ion-card>
     </ion-col>

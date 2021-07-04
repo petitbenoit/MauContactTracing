@@ -8,6 +8,11 @@ import { AuthenticationService } from '../services/authentication.service';
 
 import { StorageService } from './../services/storage.service';
 
+import { AuthConstants } from '../config/auth-constants';
+
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
 export const INTRO_KEY = 'intro-seen';
 
 @Injectable({
@@ -20,24 +25,69 @@ export class IndexGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       return new Promise( (resolve, reject) => {
-        this.storageService.get(INTRO_KEY).then( hasSeenIntro => {
+        console.log('index');
+       
           // console.log(hasSeenIntro);
-          if (hasSeenIntro && (hasSeenIntro.value === 'true')) {
-            this.afauth.authState.subscribe( (user) => {
-              // console.log(user);
-              if (user !== null) {
-                this.router.navigateByUrl('/tabs/home', { replaceUrl: true});
-                resolve(false);
-              } else {
-                resolve(true);
-              }
-            });
+
+          this.afauth.authState.subscribe( (user) => {
+            console.log('Index guard: ', user);
+            if (user) {
+              this.storageService.getJson(AuthConstants.AUTH).then( (stored:any) => {
+                console.log(stored);
+               /*  if (role === 'admin') {
+                  this.router.navigate(['admin/feed']);
+                } else { 
+                  this.router.navigate(['home/dashboard']);
+                /* } */
+                
+                if(stored.uid !== undefined && stored.uid === user.uid) {
+                  if(stored.role !== undefined){
+
+                  } else {
+                    this.router.navigateByUrl('/home/dashboard', { replaceUrl: true});
+                    resolve(false);
+                  }
+
+                } else {
+                  // this.router.navigateByUrl('/home/dashboard', { replaceUrl: true});
+                  resolve(false);
+                }
+              });
+            } else {
+              this.storageService.get(INTRO_KEY).then( hasSeenIntro => {
+                if (hasSeenIntro && (hasSeenIntro.value === 'true')) {
+                  resolve(true);
+                /* return new Promise( (resolve, reject) => {
+                  firebase.auth().onAuthStateChanged((user: firebase.User) => {
+                    if (user) {
             
-          } else {
-            this.router.navigateByUrl('/intro', { replaceUrl: true });
-            // this.router.navigateByUrl('/intro', { replaceUrl: true });
-            resolve(true);
-          }
+                      //this.storageService.get(AuthConstants.AUTH).then(role => {
+            
+                        if (role === 'admin') {
+                          this.router.navigate(['admin/feed']);
+                        } else { 
+                          //this.router.navigate(['home/home']);
+                        //}
+            
+                      //});
+                      this.router.navigate(['home/dashboard']);
+                      resolve(false);
+                    } else {
+                      resolve(true);
+                    }
+                  });
+                }); */
+                
+                } else {
+                  this.router.navigateByUrl('/intro', { replaceUrl: true });
+                  // this.router.navigateByUrl('/intro', { replaceUrl: true });
+                  resolve(true);
+                }
+              }); 
+            }
+          
+
+          
         });
 
        

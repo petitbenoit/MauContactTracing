@@ -1,3 +1,4 @@
+import { HomeRootRouter } from './home-root.router';
 import { TabsPageRoutingModule } from './../tabs/tabs-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,7 +15,8 @@ import { HomeRootPage } from './home-root.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    HomeRootPageRoutingModule,
+  // HomeRootPageRoutingModule,
+   HomeRootRouter,
     TabsPageRoutingModule
   ],
   declarations: [HomeRootPage]

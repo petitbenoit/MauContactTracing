@@ -17,6 +17,10 @@ const routes: Routes = [
       import('./pages/intro/intro.module').then(
         m => m.IntroPageModule
       )
+  },
+  {
+    path: 'symptoms-input',
+    loadChildren: () => import('./pages/symptoms-input/symptoms-input.module').then( m => m.SymptomsInputPageModule)
   }
 ];
 @NgModule({
