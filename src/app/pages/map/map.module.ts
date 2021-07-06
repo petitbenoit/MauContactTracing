@@ -10,6 +10,7 @@ import { MapPage } from './map.page';
 import { ApiService } from "../../services/api.service";
 
 import { DatePipe } from '@angular/common'
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @NgModule({
   imports: [
@@ -19,6 +20,6 @@ import { DatePipe } from '@angular/common'
     MapPageRoutingModule
   ],
   declarations: [MapPage],
-  providers: [ApiService, DatePipe]
+  providers: [ApiService, DatePipe, Geolocation]
 })
 export class MapPageModule {}
