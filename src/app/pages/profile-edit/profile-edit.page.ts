@@ -62,6 +62,7 @@ export class ProfileEditPage implements OnInit {
     });
 
     loading.present();
+    this.test.updatedAt = Date.now();
     if (this.testDateDisplay !== null)
       this.test.date = new Date(this.testDateDisplay).getTime();
 
