@@ -18,6 +18,8 @@
     <p>{{user?.userEmail}}</p>
     <p>{{user?.userPhone}}</p>
     <p>{{user?.createdAt | date}}</p>
+    <p>{{user?.testResult?.positive}}</p>
+    <p>{{user?.testResult?.date | date:'dd MMM yyyy, HH:mm'}}</p>
   </ion-card-content>
 
   <ion-button size="medium" expand="block" (click)="editProfile()"> Edit Profile</ion-button>

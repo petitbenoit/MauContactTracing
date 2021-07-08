@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Edit Profile</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home/profile" text="Profile"></ion-back-button>
+    </ion-buttons>
+    
   </ion-toolbar>
 </ion-header>
 
@@ -23,6 +26,18 @@
           <ion-label position="stacked"> Phone</ion-label>
           <ion-input required type="tel" [(ngModel)]="phone" name="phone"></ion-input>
         </ion-item>
+
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="float">Covid Test</ion-label>
+            <ion-toggle name="covid" [(ngModel)]="test.positive" (ngModelChange)="testPositive($event)" class="form-control"></ion-toggle>
+          </ion-item>
+          <div class="ion-padding" style="color: darkgreen;">Toggle on to set it positive.</div>
+          <ion-item *ngIf="test.positive" [disabled]="!test.positive">
+            <ion-label>Date</ion-label>
+            <ion-datetime  name = "covidDate" [(ngModel)]="testDateDisplay" placeholder="Select" display-format="DD MMM YYYY, HH:mm" picker-format="DD MMM YYYY, HH:mm" required></ion-datetime>
+          </ion-item>
+        </ion-col>
 
         <ion-button type="submit" expand="block" shape="round" (click)="updateProfile()"> Update
           <!-- <ion-icon name="camera"></ion-icon> -->

@@ -19,6 +19,34 @@ const routes: Routes = [
       )
   },
   {
+    path: 'dashboard',
+    loadChildren: () =>
+        import('./pages/home/home.module').then(m => m.HomePageModule)
+  },
+  {
+      path: 'map',
+      loadChildren: () =>
+          import('./pages/map/map.module').then(m => m.MapPageModule)
+  },
+  {
+      path: 'symptoms',
+      loadChildren: () => import('./pages/symptoms-checker/symptoms-checker.module').then(m => m.SymptomsCheckerPageModule)
+  }, 
+  {
+      path: 'profile',
+      loadChildren: () =>
+        import('./pages/profile/profile.module').then(
+            m => m.ProfilePageModule
+        )
+  },  
+  {
+      path: 'profile/edit',
+      loadChildren: () =>
+        import('./pages/profile-edit/profile-edit.module').then(
+            m => m.ProfileEditPageModule
+        )
+  },   
+  {
     path: 'symptoms-input',
     loadChildren: () => import('./pages/symptoms-input/symptoms-input.module').then( m => m.SymptomsInputPageModule)
   }

@@ -34,10 +34,28 @@
           <ion-input required type="password" [(ngModel)]="password" name="password"></ion-input>
         </ion-item>
 
+        <ion-card class="ion-padding">
+          <ion-row size='12'>
+            <ion-col size="12">
+              <ion-item>
+                <ion-label position="float">Covid Test</ion-label>
+                <ion-toggle name="covid" [(ngModel)]="test.positive" (ngModelChange)="testPositive($event)"  class="form-control"></ion-toggle>
+              </ion-item>
+              <div class="ion-padding" style="color: darkgreen;">Toggle on to set it positive.</div>
+              <ion-item *ngIf="test.positive" [disabled]="!test.positive">
+                <ion-label>Date</ion-label>
+                <ion-datetime  name = "covidDate" [(ngModel)]="testDateDisplay" placeholder="Select" display-format="DD MMM YYYY, HH:mm" picker-format="DD MMM YYYY, HH:mm" required></ion-datetime>
+              </ion-item>
+            </ion-col>
+      
+          </ion-row>
+        </ion-card>
+
         <ion-button type="submit" expand="block" (click)="register()"> Register
         </ion-button>
 
       </ion-list>
+      
     </form>
   </ion-card>
 </ion-content>

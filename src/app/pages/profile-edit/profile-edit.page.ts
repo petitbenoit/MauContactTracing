@@ -1,8 +1,10 @@
+import { User } from './../../models/user';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthenticationService } from './../../services/authentication.service';
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { TestResult } from 'src/app/models/user';
 
 @Component({
   selector: 'app-profile-edit',
@@ -14,6 +16,12 @@ export class ProfileEditPage implements OnInit {
   name: string;
   email: string;
   phone: string;
+  test: TestResult = {
+    positive: false,
+    createdAt: 0
+  };
+  createdAt: number;
+  testDateDisplay: any;
 
   constructor(
     private auth: AuthenticationService,
@@ -21,17 +29,31 @@ export class ProfileEditPage implements OnInit {
     private loadingCtrl: LoadingController,
     private toastr: ToastController,
     private router: Router  
-  ) { }
-
-  ngOnInit() {
+  ) { 
     this.auth.user$.subscribe(user => {
       this.userId = user.userId;
       this.name = user.userName;
       this.email = user.userEmail;
       this.phone = user.userPhone;
+      this.test = user.testResult;
+      this.createdAt = user.createdAt;
+      if (user.testResult.date !== undefined && user.testResult.date !== null)
+        this.testDateDisplay = new Date(user?.testResult?.date).toUTCString();
     })
   }
 
+  ngOnInit() {
+    
+  }
+
+  testPositive(date) {
+   console.log(date);
+   if (!date) {
+    this.test.date = null;
+    this.testDateDisplay = null;
+   } 
+   console.log(this.test);
+  }
   async updateProfile() {
     const loading = await this.loadingCtrl.create({
       message: 'Updating...',
@@ -40,13 +62,22 @@ export class ProfileEditPage implements OnInit {
     });
 
     loading.present();
+    if (this.testDateDisplay !== null)
+      this.test.date = new Date(this.testDateDisplay).getTime();
 
-    this.afs.collection('user').doc(this.userId).set({
-      'userName': this.name,
-      'userEmail': this.email,
-      'userPhone': this.phone,
-      'updatedAt': Date.now()
-    }, {merge: true})
+    const user : User = {
+      userId: this.userId,
+      userName: this.name,
+      userEmail: this.email,
+      userPhone: this.phone,
+      createdAt: this.createdAt,
+      updatedAt: Date.now(),
+      testResult: this.test
+    };
+    
+    this.afs.collection('user').doc(this.userId).set(
+      user, 
+      {merge: true})
     .then(() => {
       loading.dismiss();
       this.toast('Update Success!', 'success');

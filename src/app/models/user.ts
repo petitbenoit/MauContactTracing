@@ -3,11 +3,11 @@ export interface User {
     userName: string;
     userEmail: string;
     userPhone: string;
-    userPhoto: string;
+    userPhoto?: string;
     createdAt: number;
     updatedAt?: number;
     symptoms?: Symptoms;
-    
+    testResult?: TestResult;
 }
 
 export interface Symptoms {
@@ -20,4 +20,11 @@ export interface Symptoms {
     headache: number;
     remarks: string; // Other important details
     private: number; // let officials see symptoms
+}
+
+export interface TestResult {
+    positive: boolean; // 1 or 0
+    date?: number;
+    createdAt: number;
+    updatedAt?: number;
 }
