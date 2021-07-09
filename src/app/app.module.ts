@@ -35,6 +35,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { ApiService } from "./services/api.service";
 import { HttpClientModule } from "@angular/common/http";
 
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 // import { SplashScreen } from "@ionic-native/splash-screen/ngx";
 // import { StatusBar } from "@ionic-native/status-bar/ngx";
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
@@ -54,6 +55,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
     HttpClientModule,
   ],
   providers: [
+    BackgroundMode,
     InAppBrowser,
     ApiService,
     AuthenticationService,

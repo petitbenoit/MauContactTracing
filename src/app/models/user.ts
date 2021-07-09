@@ -28,3 +28,12 @@ export interface TestResult {
     createdAt: number;
     updatedAt?: number;
 }
+
+export interface BluetoothInfo {
+    name?: string;
+    deviceUUID: string; // user device uuid sending the information to determine the phone thats sends the data
+    location: Array<string>;
+    time: number;
+    transmissionPower : number;
+    payload: string;
+}

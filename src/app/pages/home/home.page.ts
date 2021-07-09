@@ -21,6 +21,7 @@ import { NewsPage } from './../news/news.page';
 import { DatePipe } from '@angular/common';
 // config
 import { AuthConstants } from './../../config/auth-constants';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 (window as any).global = window;
 // @ts-ignore
@@ -77,12 +78,13 @@ export class HomePage implements OnInit {
     private api: ApiService,
     private iab: InAppBrowser,
     private datePipe: DatePipe,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private backgroundMode: BackgroundMode
 
   ) {
     this.platform.ready().then((readySource) => {
-
-        this.ble.enable();
+      this.backgroundMode.enable();
+      this.ble.enable();
       this.ble.isLocationEnabled().then( (res)=> {
         console.log('Location enabled: ', res);
       }); 
@@ -95,10 +97,10 @@ export class HomePage implements OnInit {
         console.log('ble', ble.status) // logs 'enabled'
         this.setStatus(ble.status);
       });
-
+      this.Scan();
     });
     //this.checkGPSPermission();
-    this.Scan();
+    
    }
 
   ngOnInit(
@@ -106,6 +108,10 @@ export class HomePage implements OnInit {
     this.refresh('');
     // this.api.getLatest().subscribe(data => console.log('Latest: ', data));
     // this.api.getWorldData().subscribe(data=> console.log('All', data));
+  }
+
+  sendBLEData() {
+    
   }
 
   async openBLEDevices() {
@@ -604,13 +610,13 @@ arrayBufferToString(buffer){
                 // if (mfgData !== null) this.getAdvertisingData(buf);
                 // console.log('Manufacturer Data is', mfgData);
                
-                const s1 = this.bytesToString(mfgData);
+                /* const s1 = this.bytesToString(mfgData);
                 // var enc = new TextDecoder(); // always utf-8
                 console.log(this.arrayBufferToString(this.bluetoothle.stringToBytes(success.advertisement)));
                 console.log('Data: ', String.fromCharCode(...this.bluetoothle.encodedStringToBytes('Hv8GAAEJIALjOxGcNRdF/fPeBP9YQz2DcV43TrH0Rg')));
                 // const s2 = this.bluetoothle.(success.advertisement);
                 console.log(s1);
-                success.advertisement = s1;
+                success.advertisement = s1; */
               }
             }
             
