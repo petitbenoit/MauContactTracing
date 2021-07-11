@@ -3,11 +3,18 @@ export interface User {
     userName: string;
     userEmail: string;
     userPhone: string;
+    role?:string;
     userPhoto?: string;
     createdAt: number;
     updatedAt?: number;
     symptoms?: Symptoms;
     testResult?: TestResult;
+}
+
+export interface CheckIn {
+    timestamp: number;
+    location: Array<number>,
+    name: string;
 }
 
 export interface Symptoms {
@@ -30,10 +37,15 @@ export interface TestResult {
 }
 
 export interface BluetoothInfo {
+    deviceManufacturer: string;
+    devicePlatform: string;
+    deviceModel: string;
+    deviceUUID: string;
     name?: string;
-    deviceUUID: string; // user device uuid sending the information to determine the phone thats sends the data
-    location: Array<string>;
+    address: string;
+    location: Array<number>;
     time: number;
     transmissionPower : number;
+    advertising: string;
     payload: string;
 }

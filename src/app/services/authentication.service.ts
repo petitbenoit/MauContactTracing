@@ -1,7 +1,7 @@
 import { StorageService } from './storage.service';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { Injectable } from '@angular/core';
-import { User } from './../models/user';
+import { BluetoothInfo, User } from './../models/user';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthConstants } from './../config/auth-constants';
@@ -12,7 +12,7 @@ import 'firebase/auth';
 
 import { map, tap, switchMap, take } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 
 const TOKEN_KEY = 'my-token';
@@ -25,6 +25,8 @@ export class AuthenticationService {
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   token = '';
   user$: Observable<User>;
+  ble$ = new Subject<any>();
+  blue$: Observable<any>;
   user: User;
 
   constructor(
@@ -46,7 +48,34 @@ export class AuthenticationService {
             return of(null);
           }
         })
-      )
+      );
+    /*   const now = Intl.DateTimeFormat('fr-CA').format(Date.now());
+      const today = new Date();
+      const yesterday = new Date(today.setHours(today.getHours() - 48));
+      this.afs.collection('user').doc(this.userId)
+        .collection('bluetoothDevices').doc('2021-07-10')
+        .collection('c755a1c21f9eda2f').valueChanges()
+        .subscribe(snap => {
+          console.log(snap);
+        }) */
+
+       this.ble$ = new Subject<string>();
+       this.user$.subscribe( user => {
+        this.blue$ = this.ble$.pipe(
+          switchMap(time => {
+            return this.afs.doc(`user/${user.userId}`)
+          //.collection('bluetoothDevices').doc('2021-07-10')
+          .collection('ble', ref => ref.where('time', '>=', time)).valueChanges();
+          } //.doc(now.toString())
+          )
+        );
+       })
+      
+
+      // subscribe to changes
+     /*  queryObservable.subscribe(queriedItems => {
+        console.log(queriedItems);  
+      }); */
     // this.loadToken();
   }
 

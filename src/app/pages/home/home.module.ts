@@ -8,7 +8,9 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
+
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @NgModule({
   imports: [
@@ -18,6 +20,6 @@ import { DatePipe } from '@angular/common'
     HomePageRoutingModule
   ],
   declarations: [HomePage],
-  providers: [DatePipe]
+  providers: [DatePipe, Geolocation]
 })
 export class HomePageModule {}

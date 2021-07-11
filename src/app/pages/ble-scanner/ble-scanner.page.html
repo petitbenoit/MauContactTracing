@@ -3,7 +3,7 @@
     <ion-title>BLE Scanner</ion-title>
 
     <ion-buttons slot="end">
-      <ion-button *ngIf="!toggle" (click)="Scan()">
+      <ion-button *ngIf="!toggle" (click)="startScan()">
         Scan
        </ion-button>
       <ion-button *ngIf="toggle" (click)="stopScan()">
@@ -21,9 +21,10 @@
 <ion-list>
     <ion-card-content ion-item *ngFor="let device of bleDevices">
       <p>{{device?.name || 'Unnamed'}}</p>
-      <p>{{device?.id}}</p>
+      <p>{{device?.address}}</p>
       <p> RSSI: {{device?.rssi}}</p>
-      <p> {{device?.advertising || 'unknown'}}</p>
+      <p> {{device?.advertisement || 'unknown'}}</p>
+      <p>{{device?.payload}}</p>
     </ion-card-content> 
   </ion-list>
 </ion-content>

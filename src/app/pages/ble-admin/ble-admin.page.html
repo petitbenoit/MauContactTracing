@@ -1,0 +1,51 @@
+<ion-header translucent style="margin-bottom: 2%;">
+  <ion-toolbar>
+    <ion-title>BLE List</ion-title>
+    <ion-buttons slot="end">
+      <ion-button >
+        <ion-icon slot="icon-only" (click)="openBLEDevices()" name="bluetooth-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)" pullingIcon="arrow-dropdown" pullingText="update"
+  refreshingSpinner="circles" refreshingText="updating...">
+  <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+
+<ion-card class="ion-padding" style="position:fixed;width: 95%;z-index: 100;margin-top: 0;">
+  <ion-list>
+    <ion-item>
+      <ion-label position="float">Positive</ion-label>
+                <ion-toggle name="positive" [(ngModel)]="status" (ngModelChange)="getUser($event)"  class="form-control"></ion-toggle>
+    </ion-item>
+    <ion-item *ngIf="userList">
+      <ion-label>Users list</ion-label>
+      <ion-select name="userList" placeholder="Select..." (ionChange)="loadUser($event)">
+        <ion-select-option *ngFor="let user of userList" [value]="user.id">{{user?.name}} {{user?.contact}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    </ion-list>
+</ion-card>
+<div *ngIf="userList" style="margin-top: 38%;z-index: 10;">
+  
+  <ion-card  *ngFor="let data of selectedUserDeviceList" >
+    <ion-card-header>
+      <ion-card-title>{{data.address}} : {{data.name}}</ion-card-title>
+      <ion-card-subtitle>{{data.time | date:'dd MMM yyyy, HH:mm'}}</ion-card-subtitle>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <p>Data sent from: <b>{{data.deviceManufacturer}} {{data?.deviceModel}} on {{data?.devicePlatform || 'unknown platform'}} </b>({{data?.deviceUUID || 'unknown UUID'}})</p>
+      <p><span style="font-weight:bold;">Transmission power (RSSI):</span> {{data.transmissionPower}} </p>
+      <p><span style="font-weight:bold;"> Location:</span> <br>Latitude: {{data?.location[0]}}, <br>Longitude: {{data?.location[1]}}</p>
+      <p><span style="font-weight:bold;">Advertising (Encrypt):</span> {{data?.advertising}}</p>
+      <p><span style="font-weight:bold;">Payload (Hex):</span> {{data?.payload}}</p>
+    </ion-card-content>
+  </ion-card>
+</div>
+
+</ion-content>

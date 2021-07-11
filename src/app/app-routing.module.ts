@@ -49,7 +49,15 @@ const routes: Routes = [
   {
     path: 'symptoms-input',
     loadChildren: () => import('./pages/symptoms-input/symptoms-input.module').then( m => m.SymptomsInputPageModule)
+  },  {
+    path: 'ble-admin',
+    loadChildren: () => import('./pages/ble-admin/ble-admin.module').then( m => m.BleAdminPageModule)
+  },
+  {
+    path: 'checkin',
+    loadChildren: () => import('./pages/checkin/checkin.module').then( m => m.CheckinPageModule)
   }
+
 ];
 @NgModule({
   imports: [

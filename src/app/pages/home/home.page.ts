@@ -11,6 +11,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 // Services
 import { ToastService } from './../../services/toast.service';
 import { ApiService } from './../../services/api.service';
@@ -22,6 +23,10 @@ import { DatePipe } from '@angular/common';
 // config
 import { AuthConstants } from './../../config/auth-constants';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { BluetoothInfo } from 'src/app/models/user';
+import { Subject } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 (window as any).global = window;
 // @ts-ignore
@@ -57,9 +62,11 @@ export class HomePage implements OnInit {
   latestNews: any;
   timetest: any;
   devices: any[] = [];
-  bledevices: any[]=[];
+  bleDevices: any[]=[];
   public logmsg: string[] = [];
   worldData: any;
+  userId: string;
+  deviceExist: string[] = [];
 
   constructor(
     public ble: BLE,
@@ -78,12 +85,21 @@ export class HomePage implements OnInit {
     private api: ApiService,
     private iab: InAppBrowser,
     private datePipe: DatePipe,
+    private afs: AngularFirestore,
     private storageService: StorageService,
-    private backgroundMode: BackgroundMode
+    private backgroundMode: BackgroundMode,
+    private geolocation : Geolocation
 
   ) {
     this.platform.ready().then((readySource) => {
-      this.backgroundMode.enable();
+
+      this.auth.user$.subscribe((user: any) => {
+        this.userId = user?.userId;  
+        console.log(this.userId);
+        
+      });
+      
+      //this.backgroundMode.enable();
       this.ble.enable();
       this.ble.isLocationEnabled().then( (res)=> {
         console.log('Location enabled: ', res);
@@ -95,9 +111,40 @@ export class HomePage implements OnInit {
       this.bluetoothle.enable();
       this.bluetoothle.initialize().subscribe(ble => {
         console.log('ble', ble.status) // logs 'enabled'
-        this.setStatus(ble.status);
+        //this.setStatus(ble.status);
+
+        this.startScan();
       });
-      this.Scan();
+
+     /*  const size$ = new Subject<string>();
+      const queryObservable = size$.pipe(
+        switchMap(size => 
+          afs.collection('items', ref => ref.where('size', '==', size)).valueChanges()
+        )
+      ); */
+
+      // subscribe to changes
+     /*  queryObservable.subscribe(queriedItems => {
+        console.log(queriedItems);  
+      }); */
+      this.auth.blue$.subscribe( val => {
+        console.log(val);
+      });
+      const today = new Date();
+      const yesterday = new Date(today.setHours(today.getHours() - 48));
+      this.auth.ble$.next(yesterday.getTime());
+
+      /* const now = Intl.DateTimeFormat('fr-CA').format(Date.now());
+      const today = new Date();
+      const yesterday = new Date(today.setHours(today.getHours() - 48));
+      this.afs.collection('user').doc(this.userId)
+        .collection('bluetoothDevices').doc('2021-07-10')
+        .collection('c755a1c21f9eda2f').valueChanges()
+        .subscribe(snap => {
+          console.log(snap);
+        }) */
+      //this.Scan();
+      //this.startScan();
     });
     //this.checkGPSPermission();
     
@@ -110,8 +157,35 @@ export class HomePage implements OnInit {
     // this.api.getWorldData().subscribe(data=> console.log('All', data));
   }
 
-  sendBLEData() {
-    
+  sendBLEData(info) {
+    this.geolocation.getCurrentPosition().then((resp) => {
+      const geolocation = [resp.coords.latitude, resp.coords.longitude];
+      const now = Date.now();
+      const bluetoothCollection: BluetoothInfo = {
+        deviceManufacturer: this.device.manufacturer,
+        devicePlatform: this.device.platform,
+        deviceModel: this.device.model,
+        deviceUUID: this.device.uuid,
+        name: info.name || 'unknown',
+        address: info.address,
+        location: geolocation,
+        time: now,
+        transmissionPower : info.rssi,
+        advertising: info.advertisement,
+        payload: info.payload
+      }
+
+      //const today = Intl.DateTimeFormat('fr-CA').format(now);
+        console.log(this.device.uuid);
+      this.afs.doc('user/'+ this.userId)
+        //.collection('bluetoothDevices').doc(today)
+        .collection('ble').doc(now.toString())
+      .set(bluetoothCollection);
+
+      
+     }).catch((error) => {
+       console.log('Error getting location', error);
+     });
   }
 
   async openBLEDevices() {
@@ -400,7 +474,7 @@ console.log( String.fromCharCode.apply(null, new Uint8Array(packets[0].data) ));
 //////////////////////////////////////////////////////////////////////////////////////////
 }
 
-   Scan(){
+ /*   Scan(){
     this.ble.scan([],30).subscribe( 
       device => {
 
@@ -478,7 +552,7 @@ console.log('HEX: ', hexResult);
                 this.parseAdvertisingData(hexResult.slice(2));
                 var data = new Float32Array(hexResult.slice(2));
                 console.log(data);
-            } */
+            } 
 
 //////////////////////////////////////////////////////////////////////
         var SERVICE_DATA_KEY = '0xff';
@@ -496,11 +570,11 @@ console.log('HEX: ', hexResult);
                 // remaining bytes are the service data, expecting 32bit floating point number
                 var data = new Float32Array(serviceData.slice(2));
                 console.log(data[0]);
-            } */
+            } 
         
       }
     );
-  }
+  } */
     //Check if application having GPS access permission  
     checkGPSPermission() {
       this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then(
@@ -588,11 +662,54 @@ arrayBufferToString(buffer){
         arr[index] = obj;
     }
   }
-    startScan() {
+
+  startScan() {
+    let params = {
+      services: [
+       /*  "180D",
+        "180F" */
+      ],
+    }
+    this.bleDevices = [];
+    this.bluetoothle.startScan({ services: [] }).subscribe((success) => {
+      
+      
+      if(typeof success.advertisement !== undefined && 
+        success.advertisement !== null && success.advertisement !== '') {
+
+        if (typeof success.advertisement == 'string') {
+            const mfgData = this.bluetoothle.encodedStringToBytes(success.advertisement);
+            const hex = Buffer.from(mfgData).toString('hex');
+            success['payload'] = hex;
+
+            if (success.rssi && success.rssi >= -50) {
+              if (success.address && !this.deviceExist.includes(success.address)){
+                // check in first contact + timestamp
+                console.log(success);
+                this.sendBLEData(success);
+                this.deviceExist.push(success.address);
+              } else {
+                // checkinInternal timestamp interval 15 second
+                // check out // update latest timestamp
+                // if date.now - initial checkin timestamp < 16min checkout 
+
+              }
+            }
+        }
+        this.ngZone.run(() => {
+          this.pushToArray(this.bleDevices, success);
+        });
+      }
+    }, (error) => {
+      console.log("error: " + JSON.stringify(error));
+    })
+  }
+
+    /* startScan() {
       let params = {
         services: [
-         /*  "180D",
-          "180F" */
+         //  "180D",
+          // "180F" 
         ],
       }
       this.setStatus('Scanning for Bluetooth LE Devices');
@@ -616,7 +733,7 @@ arrayBufferToString(buffer){
                 console.log('Data: ', String.fromCharCode(...this.bluetoothle.encodedStringToBytes('Hv8GAAEJIALjOxGcNRdF/fPeBP9YQz2DcV43TrH0Rg')));
                 // const s2 = this.bluetoothle.(success.advertisement);
                 console.log(s1);
-                success.advertisement = s1; */
+                success.advertisement = s1; 
               }
             }
             
@@ -648,7 +765,7 @@ arrayBufferToString(buffer){
       setTimeout(() => {
         this.setStatus.bind(this);
       }, 5000, 'Scan complete');
-    }
+    } */
   
     async connectToDevice(device: any) {
       debugger;
