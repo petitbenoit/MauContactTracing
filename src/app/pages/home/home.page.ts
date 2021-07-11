@@ -180,7 +180,9 @@ export class HomePage implements OnInit {
       this.afs.doc('user/'+ this.userId)
         //.collection('bluetoothDevices').doc(today)
         .collection('ble').doc(now.toString())
-      .set(bluetoothCollection);
+      .set(bluetoothCollection).then(() => {
+        this.toast.presentToast(`1 BLE device detected.`, 'success');
+      });
 
       
      }).catch((error) => {
