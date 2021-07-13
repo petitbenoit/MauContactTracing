@@ -64,7 +64,7 @@ export class HomePage implements OnInit {
   devices: any[] = [];
   bleDevices: any[]=[];
   public logmsg: string[] = [];
-  worldData: any;
+  mauritiusData: any;
   userId: string;
   deviceExist: string[] = [];
 
@@ -98,7 +98,7 @@ export class HomePage implements OnInit {
         console.log(this.userId);
         
       });
-      this.api.getMauritiusData().subscribe((data) => console.log(data));
+      
       //this.backgroundMode.enable();
       this.ble.enable();
       this.ble.isLocationEnabled().then( (res)=> {
@@ -152,7 +152,8 @@ export class HomePage implements OnInit {
 
   ngOnInit(
   ) {
-    this.refresh('');
+    this.adapterInfo();
+    this.refresh();
     // this.api.getLatest().subscribe(data => console.log('Latest: ', data));
     // this.api.getWorldData().subscribe(data=> console.log('All', data));
   }
@@ -247,16 +248,17 @@ export class HomePage implements OnInit {
     // });
   }
 
-  refresh(event) {
-    this.getWorldData().then(() => {
+  refresh(event?) {
+    this.getMauritiusData().then(() => {
+      console.log(this.mauritiusData);
       this.getDailyNews().then(() => {
-        if(event !== '')
+        if(event !== undefined)
           event.target.complete();
       });
     });
   }
    
-  getWorldData() {
+  /* getWorldData() {
     return new Promise ((resolve) => {
       this.api.getWorldData().subscribe((data) => {
         resolve(this.worldData = data);
@@ -266,24 +268,35 @@ export class HomePage implements OnInit {
         resolve(this.toast.presentToast(error.message, 'danger'));
       });
     });
+  } */
+
+  getMauritiusData() {
+    return new Promise( (resolve) => {
+      this.api.getMUData().subscribe((data: Array<object>) => {
+     resolve (this.mauritiusData = data.filter((field:any) => field.country === "Mauritius")[0]);
+      
+      }, error => {
+        resolve(this.toast.presentToast(error.message, 'danger'));
+      });
+    });
   }
 
   async openWorldCases() {
     
     const alert = await this.alertController.create({
-      header: `World Cases`,
+      header: `Mauritius Cases`,
       message: `
-      Updated: <b>${this.datePipe.transform(this.worldData?.updated, 'dd MMM yyyy, HH:mm')}</b><br><hr>
-      Population: <b>${this.worldData?.population}</b><br><hr>
-      Active: <b>${this.worldData?.active}</b><br>
-      Recovered: <b>${this.worldData?.recovered}</b><br>
-      Critical: <b>${this.worldData?.critical}</b><br>
-      Deaths: <b>${this.worldData?.deaths}</b><br>
-      Tests: <b>${this.worldData?.tests}</b><br>
+      Updated: <b>${this.datePipe.transform(this.mauritiusData?.updated, 'dd MMM yyyy, HH:mm')}</b><br><hr>
+      Population: <b>${this.mauritiusData?.population}</b><br><hr>
+      Active: <b>${this.mauritiusData?.active}</b><br>
+      Recovered: <b>${this.mauritiusData?.recovered}</b><br>
+      Critical: <b>${this.mauritiusData?.critical}</b><br>
+      Deaths: <b>${this.mauritiusData?.deaths}</b><br>
+      Tests: <b>${this.mauritiusData?.tests}</b><br>
       <hr>
-      Today Cases: <b>${this.worldData?.todayCases}</b><br>
-      Today Recovered: <b>${this.worldData?.todayRecovered}</b><br>
-      Today Deaths: <b>${this.worldData?.todayDeaths}</b><br>
+      Today Cases: <b>${this.mauritiusData?.todayCases}</b><br>
+      Today Recovered: <b>${this.mauritiusData?.todayRecovered}</b><br>
+      Today Deaths: <b>${this.mauritiusData?.todayDeaths}</b><br>
       `,
       buttons: [
         {
@@ -350,14 +363,14 @@ export class HomePage implements OnInit {
     f.readAsText(bb.getBlob());
 }
 
-ab2str(buf) {
+/* ab2str(buf) {
 var bufView = new Uint16Array(buf);
 var unis =""
 for (var i = 0; i < bufView.length; i++) {
     unis=unis+String.fromCharCode(bufView[i]);
 }
 return unis
-}
+}*/
 asHexString(i) {
     var hex;
 
@@ -369,7 +382,7 @@ asHexString(i) {
     }
 
     return "0x" + hex;
-}
+} 
 
 getAdvData(buffer) {
   var convertData = String.fromCharCode.apply(null, new Uint8Array(buffer) );
@@ -629,8 +642,8 @@ console.log('HEX: ', hexResult);
   
     adapterInfo() {
       this.bluetoothle.getAdapterInfo().then((success) => {
-        // console.log("adapterInfo: " + success.name);
-        this.setStatus(success.name);
+        console.log("adapterInfo: ", success);
+       // this.setStatus(success.name);
       })
       this.checkBLEPermission();
     }

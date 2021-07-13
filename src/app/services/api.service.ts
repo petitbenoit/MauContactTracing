@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 //import  * as CryptoJS from "crypto-js";
@@ -42,6 +42,21 @@ export class ApiService {
     .set('x-rapidapi-host', 'priaid-symptom-checker-v1.p.rapidapi.com');
     const postData = {};
     return this.http.get( uri ,{ headers: headers});
+  }
+
+  getMUData() {
+    const country = "Mauritius";
+    const uri = `https://corona.lmao.ninja/v2/countries/`;
+
+    const headers = new HttpHeaders()
+    .set("Accept", "*/*")
+    .set("Access-Control-Allow-Origin", "*")
+    .set("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+    .set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+    //.set('Content-type', 'application/json')
+    const postData = { "query" : "Mauritius"};
+
+    return this.http.get( uri , {headers: headers });
   }
 
   getWorldData() {
