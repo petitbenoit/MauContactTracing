@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
       take(1),
       map(user => user ? true: false),
       tap(isLoggedIn => {
-        console.log('auth');
+        // console.log('auth');
         if (isLoggedIn) {
           return true;
         }

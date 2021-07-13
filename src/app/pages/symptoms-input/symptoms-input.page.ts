@@ -1,12 +1,15 @@
+import { User } from 'src/app/models/user';
 import { Symptoms } from './../../models/user';
 import { AuthenticationService } from './../../services/authentication.service';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoadingController, ModalController} from '@ionic/angular';
+import { LoadingController, ModalController, AlertController } from '@ionic/angular';
 import { ToastService } from 'src/app/services/toast.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { DatePipe } from '@angular/common';
+import { Subject, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 @Component({
   selector: 'app-symptoms-input',
   templateUrl: './symptoms-input.page.html',
@@ -24,11 +27,13 @@ export class SymptomsInputPage implements OnInit {
     private: 0
   };
 
-  boolNotType = ['temp', 'remarks', 'updatedAt'];
+  boolNotType = ['temp', 'remarks', 'updatedAt', 'score', 'consult'];
 
   formAdd:any;
   userId: string;
   readonly = true;
+  sympt$ = new Subject<any>();
+  symptoms$ : Observable<any>;
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -38,10 +43,18 @@ export class SymptomsInputPage implements OnInit {
     private auth: AuthenticationService,
     private modalCtrl: ModalController,
     private afs: AngularFirestore,
+    private alertCtrl: AlertController
   ) {
+    this.sympt$ = new Subject<string>();
 
-    this.auth.user$.subscribe((user: any) => {
-      this.userId = user?.uid;
+    this.symptoms$ = this.sympt$.pipe(
+      switchMap(user => {
+        return this.afs.doc(`user/${user}`).valueChanges();
+      })
+    );
+    
+    this.symptoms$.subscribe( user => {
+      console.log(user);
       if (user.symptoms !== undefined) {
         this.symptoms = user?.symptoms;
         const val = user?.symptoms;
@@ -54,6 +67,14 @@ export class SymptomsInputPage implements OnInit {
         this.formAdd.patchValue(this.symptoms);
       }
       
+    }, error => {
+      console.log(error);
+      this.toastr.presentToast(error.error+'.Please try again.', 'danger');
+    });
+
+    this.auth.user$.subscribe((user: any) => {
+      this.userId = user?.userId;
+      this.sympt$.next(user.userId);
     });
 
     
@@ -149,28 +170,105 @@ export class SymptomsInputPage implements OnInit {
     });
 
     if (symptoms.remarks !== null) {
-      const symptomsCollection: Symptoms = {...symptoms, 
-        'updatedAt': Date.now()
-      };
-
-      this.afs.collection('user').doc(this.userId
-        ).set({
-        'symptoms': symptomsCollection
-      }, {merge: true})
-      .then(() => {
-        loading.dismiss();
-        this.toastr.presentToast('Update successfully!', 'success');
-        this.readOnly(true);
-      })
-      .catch(error=> {
-        loading.dismiss();
-        this.toastr.presentToast(error.message, 'danger')
+      let consult = false;
+      this.analyseSymptoms(symptoms).then((result) => {
+        consult = this.resultScore(result);
+        const totalScore = result;
+        console.log(totalScore);
+        const symptomsCollection: Symptoms = {...symptoms, 
+          'consult' : consult,
+          'score' : totalScore,
+          'updatedAt': Date.now()
+        };
+        
+        this.afs.collection('user').doc(this.userId
+          ).set({
+          'symptoms': symptomsCollection
+        }, {merge: true})
+        .then(() => {
+          loading.dismiss();
+          if (consult) {
+          
+          }
+          this.toastr.presentToast('Update successfully!', 'success');
+          if (this.resultScore(totalScore)) { 
+            this.consultationPrompt();
+          }
+          this.readOnly(true);
+        })
+        .catch(error=> {
+          loading.dismiss();
+          this.toastr.presentToast(error.message, 'danger')
+        });
       });
 
     } else {
       this.toastr.presentToast('Please fill all the blanks', 'warning');
     }
 
+  }
+
+  async consultationPrompt() {
+     const alert = await this.alertCtrl.create({
+       header: 'Contact hotline',
+       message: `Please contact hotline service on <b>8924</b>. <br><br> You may have contracted the Covid-19 !`,
+       buttons: [
+         {
+           text: 'Ok',
+           role: 'cancel',
+           cssClass: 'secondary'
+         }
+       ]
+     });
+     alert.present();
+   }
+
+  analyseSymptoms(symptoms: Symptoms) {
+    return new Promise(resolve => {
+
+    
+    let total = 0;
+    const score =
+      {
+        DiffToBreath: 10,
+        cough: 5,
+        fever: 12,
+        headache: 5,
+        soreThroat: 8
+      };
+
+      Object.keys(symptoms).map(key => { if (symptoms[key]) { return score[key]; } else { return 0; } })
+      .forEach(val => {
+          console.log(val);
+          if (val !== undefined) {
+            total += val;
+          }
+              
+      });
+      
+      console.log(total);
+      resolve(total);
+    });
+  }
+
+  getScoreTemp(temp) { 
+    if (temp >= 35 && temp < 37) {
+      return 0;
+    } else if (temp >= 37 && temp < 38) {
+      return 10;
+    } else if (temp >= 38 && temp < 40 ) {
+      return 15;
+    } else if (temp >= 40) {
+      return 20;
+    }
+  }
+
+  resultScore(score) {
+    if (score >= 25) {
+      return true
+    } else {
+      return false;
+    }
   }
 
 }

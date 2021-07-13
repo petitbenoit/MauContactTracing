@@ -1,0 +1,52 @@
+<ion-header>
+
+  <ion-toolbar color="primary">
+    
+    
+      <ion-title>
+       
+        <ion-button>
+         <ion-icon slot="icon-only" name="people-outline"></ion-icon>
+        </ion-button>
+   
+        Edit user:  <span style="text-transform: capitalize">{{userData.name}} {{userData.surname}}</span>
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  
+  </ion-header>
+  <ion-content>
+  <form #form="ngForm" (ngSubmit)="updateUser(form)">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">Role</ion-label>
+        <ion-select  interface="popover" name="role" (ionChange)="onRoleChange($event)" placeholder="select a role" [ngModel]="userData.role" required>
+          <ion-select-option *ngFor="let role of roles" [value]="role.value">{{role.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+  
+      <ion-item>
+        <ion-label position="stacked">Created</ion-label>
+        <ion-input autocomplete="off" name="createdAt" type="text" placeholder="" [ngModel]="userData.createdAt | date:'d MMM yyyy HH:mm:ss'" required readonly></ion-input>
+      </ion-item>
+  
+      <ion-item *ngIf="alreadyUpdated">
+        <ion-label position="stacked">Updated</ion-label>
+        <ion-input [disabled]="!alreadyUpdated" autocomplete="off" name="updatedAt" type="text" placeholder="" [ngModel]="userData.updatedAt| date:'d MMM yyyy HH:mm:ss'" required readonly></ion-input>
+      </ion-item>  
+  
+    </ion-list>
+  
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="6" size-md="6" size-xs="12">
+        <ion-button expand="block" share="round" color="success"
+    type="submit" [disabled]="form.invalid">Update</ion-button>
+      </ion-col>
+    </ion-row>
+  
+  </form>
+  </ion-content>

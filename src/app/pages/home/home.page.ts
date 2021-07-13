@@ -98,7 +98,7 @@ export class HomePage implements OnInit {
         console.log(this.userId);
         
       });
-      
+      this.api.getMauritiusData().subscribe((data) => console.log(data));
       //this.backgroundMode.enable();
       this.ble.enable();
       this.ble.isLocationEnabled().then( (res)=> {

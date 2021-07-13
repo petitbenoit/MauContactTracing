@@ -37,6 +37,18 @@
           <ion-input readonly value="{{symptoms.updatedAt | date:'dd MMM yyyy, HH:mm' }}"></ion-input>
         </ion-item>
       </ion-col>
+      <ion-col size="6" *ngIf="symptoms.score">
+        <ion-item>
+          <ion-label position="float">Score result : </ion-label>
+          <ion-input readonly value="{{symptoms.score}}"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6" *ngIf="symptoms.consult">
+        <ion-item>
+          <ion-label position="float">Consult : </ion-label>
+          <ion-input readonly value="{{symptoms.consult? 'Yes' : 'No'}}"></ion-input>
+        </ion-item>
+      </ion-col>
     </ion-row>
     <form (ngSubmit)="setSymptoms()" [formGroup]="formAdd">
       <ion-list>

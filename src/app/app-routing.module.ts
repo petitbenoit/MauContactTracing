@@ -56,6 +56,18 @@ const routes: Routes = [
   {
     path: 'checkin',
     loadChildren: () => import('./pages/checkin/checkin.module').then( m => m.CheckinPageModule)
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then( m => m.AdminPageModule)
+  },
+  {
+    path: 'manage-user',
+    loadChildren: () => import('./pages/manage-user/manage-user.module').then( m => m.ManageUserPageModule)
+  },
+  {
+    path: 'edit-user',
+    loadChildren: () => import('./pages/edit-user/edit-user.module').then( m => m.EditUserPageModule)
   }
 
 ];

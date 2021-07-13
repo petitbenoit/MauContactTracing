@@ -1,0 +1,50 @@
+<ion-header no-border>
+  <ion-toolbar color="tertiary">
+    <ion-title>Manage Users</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-row md-size="12">
+
+    <ion-col size="12" md-size="12" class="content-list">
+      <ion-toolbar>
+  
+      <ion-list class="header-list"> 
+        <ion-item lines="none" class="header-item">
+          <ion-label>User lists</ion-label> 
+        <ion-buttons slot="end">
+          <ion-button (click)="automaticClose = !automaticClose">
+            <ion-icon slot="icon-only" name="close" *ngIf="automaticClose"></ion-icon>
+            <ion-icon slot="icon-only" name="resize" *ngIf="!automaticClose"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>  
+      </ion-list>
+      <ion-searchbar 
+      placeholder="Search here..."
+      (ionChange)="filterList($event)">
+    </ion-searchbar>
+    </ion-toolbar>
+      <div>
+        <ion-list *ngFor="let user of usersData | filter : textSearch; index as i" 
+        class="accordion-list" 
+        lines="none" 
+        detail="false" 
+        >
+          <ion-item tappable (click)="toggleSection(i)" ngClass="{'section-active': user.open, 'section': !user.open}">
+            <ion-icon slot="start" name="arrow-forward" *ngIf="!user.open"></ion-icon>    
+            <ion-icon slot="start" name="arrow-down" *ngIf="user.open"></ion-icon>    
+            <ion-label>{{user.surname}} {{user.name}} | {{user.role}}</ion-label>
+          </ion-item>
+
+          <div *ngIf="user.uid && user.open" class="userData-list">
+            <app-manage-admin-view [userData]="user" (refresh)="refreshPage()"></app-manage-admin-view>
+          </div>
+        </ion-list>
+      </div>
+   
+    </ion-col>
+  </ion-row>
+
+</ion-content> 

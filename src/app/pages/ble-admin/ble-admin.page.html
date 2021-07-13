@@ -5,6 +5,7 @@
       <ion-button >
         <ion-icon slot="icon-only" (click)="openBLEDevices()" name="bluetooth-outline"></ion-icon>
       </ion-button>
+      <ion-button fill="clear" color="danger" (click)="presentLogOutConfirm()"><ion-icon name="log-out-outline"></ion-icon></ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -19,7 +20,7 @@
   <ion-list>
     <ion-item>
       <ion-label position="float">Positive</ion-label>
-                <ion-toggle name="positive" [(ngModel)]="status" (ngModelChange)="getUser($event)"  class="form-control"></ion-toggle>
+                <ion-toggle name="positive" [(ngModel)]="status" (ngModelChange)="getUserByStatus($event)"  class="form-control"></ion-toggle>
     </ion-item>
     <ion-item *ngIf="userList">
       <ion-label>Users list</ion-label>

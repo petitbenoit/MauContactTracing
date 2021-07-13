@@ -39,9 +39,10 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 // import { SplashScreen } from "@ionic-native/splash-screen/ngx";
 // import { StatusBar } from "@ionic-native/status-bar/ngx";
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, FilterPipe],
   entryComponents: [],
   imports: [
     BrowserModule, 

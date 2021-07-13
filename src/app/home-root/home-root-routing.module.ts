@@ -70,7 +70,7 @@ const routes: Routes = [
     path: '',
     redirectTo: 'home/tabs',
     pathMatch: 'full'
-    },
+  },
     {
         path: 'tabs',
         loadChildren: () => import('../tabs/tabs.module').then( m => m.TabsPageModule)

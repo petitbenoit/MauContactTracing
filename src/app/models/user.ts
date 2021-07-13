@@ -15,6 +15,7 @@ export interface CheckIn {
     timestamp: number;
     location: Array<number>,
     name: string;
+    address: string;
 }
 
 export interface Symptoms {
@@ -26,6 +27,8 @@ export interface Symptoms {
     soreThroat: number;
     headache: number;
     remarks: string; // Other important details
+    consult?: boolean;
+    score?: number;
     private: number; // let officials see symptoms
 }
 

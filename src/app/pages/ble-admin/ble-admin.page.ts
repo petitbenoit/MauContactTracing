@@ -1,8 +1,10 @@
+import { Router } from '@angular/router';
+import { AuthenticationService } from './../../services/authentication.service';
 import { ToastService } from './../../services/toast.service';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { LoadingController, Platform, ToastController, ModalController } from '@ionic/angular';
+import { LoadingController, Platform, ToastController, ModalController, AlertController } from '@ionic/angular';
 import { Observable, of, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { User } from 'src/app/models/user';
@@ -31,28 +33,13 @@ export class BleAdminPage implements OnInit {
     //private router: Router,
     private loadingCtrl: LoadingController,
     private toast: ToastService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private auth: AuthenticationService,
+    private alertController: AlertController,
+    private router: Router
     //private storageService: StorageService
     ) {
       this.platform.ready().then((readySource) => {
-        // list users who are positive with Covid-19
-      /* this.user$ = this.afauth.authState
-      .pipe(
-        switchMap( user => {
-          if (user)
-          {
-            return this.afs.collection(`user`, ref => 
-              ref.where('testResult.positive', '==', true) 
-            ).valueChanges().pipe(
-              map((user) => user.map((us:User) => { return {id: us.userId, name: us.userName, contact: us.userPhone}}))
-            )
-          } else {
-            return of(null);
-          }
-        })
-      ); */
-      this.setResultTest(true);
-      
 
       this.ble$ = new Subject<string>();
       const today = new Date();
@@ -64,60 +51,50 @@ export class BleAdminPage implements OnInit {
         .collection('ble', ref => ref.where('time', '>=', yesterday.getTime())).valueChanges();
         })
       );
-
-      this.user$.subscribe( user => {
+      
+      this.blue$.subscribe( result => {
+        console.log(result);
+        this.selectedUserDeviceList = result;
         
+      }, error => {
+        console.log(error);
+        this.toast.presentToast(error.error+'.Please try again.', 'danger');
+      });
+
+      this.initUsersByStatus(true); // init user$
+
+      this.user$.subscribe(user => { // subscribe to users
+        console.log(user);
         this.userList = user;
-        console.log('userPos: ', this.userList);
-        //this.afs.doc(`user/${user[0]}`).collection
-        /* this.afs.doc(`user/${user[0]}`).collection('ble').valueChanges()
-        .subscribe( val => console.log('Result: ', val));
- */     this.refresh();
-        this.ble$.next(user[1].id);
-      /*  this.ble$ = new Subject<string>();
-       this.blue$ = this.ble$.pipe(
-        switchMap(user => {
-          return this.afs.doc(`user`)
-        .collection('ble', ref => ref.where('time', '>=', time)).valueChanges();
-        } 
-        )
-        );  */
+      })
 
-       /* this.user$.subscribe( user => {
-         console.log('userPos: ', user);
-         Object.keys(user).forEach( key => {
-           const userPositive = user[key];
 
-         })
-       */
-       }) 
-    });
+    }); // platform end here
   }
 
-  ngOnInit() {
-  }
-  async refresh(event?) {
+  ngOnInit() {}
+
+  async refresh(event?) { // refresh users 
     
-    this.blue$.subscribe( result => {
-      console.log(result);
-      this.selectedUserDeviceList = result;
+    this.user$.subscribe(user => { // subscribe to users
+      console.log(user);
+      this.userList = user;
+      this.selectedUserDeviceList = [];
       if(event !== undefined){
         event.target.complete();
       }
-    }, error => {
-      console.log(error);
-      this.toast.presentToast(error.error+'.Please try again.', 'danger');
-    });
-
+    })
+ 
   }
 
   loadUser(e) {
     if(e !== undefined && e.detail.value !== undefined && e.detail.value.length > 0)
     this.ble$.next(e.detail.value);
   }
-  getUser(status) {
+
+  getUserByStatus(status) {
     console.log(status);
-    this.setResultTest(status);
+    this.initUsersByStatus(status);
     this.user$.subscribe( users => {
       this.userList = users;
       this.selectedUserDeviceList = null;
@@ -125,7 +102,7 @@ export class BleAdminPage implements OnInit {
     })
   }
 
-  setResultTest(positive = false) {
+  initUsersByStatus(positive = false) {
 
     this.user$ = this.afauth.authState
       .pipe(
@@ -145,11 +122,44 @@ export class BleAdminPage implements OnInit {
   }
 
   async openBLEDevices() {
+    console.log('test');
     const addModal = await this.modalCtrl.create({
       component: BleScannerPage,
       swipeToClose: true,
     });
-    return await addModal.present();
+   addModal.present();
+  }
+
+  async presentLogOutConfirm() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Logout',
+      message: '<strong>Do you want to logout ?</strong>',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+           
+          }
+        }, {
+          text: 'Yes',
+          handler: () => {
+            this.logout();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  logout() {
+    // this.storageService.removeStorageItem(AuthConstants.AUTH).then(res => {
+      this.auth.signOut();
+      this.router.navigateByUrl('/login',  { replaceUrl: true});
+    // });
   }
 
 }

@@ -35,11 +35,9 @@ export class ApiService {
 
     const headers = new HttpHeaders()
     .set("Access-Control-Allow-Origin", "*")
-    .set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-    .set("Access-Control-Allow-Headers", "X-Requested-With,content-type")
-    .set("Access-Control-Allow-Credentials", "true")
-    .set('Content-type', 'application/json')
-    .set('Accept', '*/*')
+    .set("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+    .set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+    //.set('Content-type', 'application/json')
     .set('x-rapidapi-key', '3f20764480msh261109a6369b196p1fb3e5jsn15fb7139b3a9')
     .set('x-rapidapi-host', 'priaid-symptom-checker-v1.p.rapidapi.com');
     const postData = {};

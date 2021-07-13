@@ -42,7 +42,7 @@ export class IndexGuard implements CanActivate {
                 
                 if(stored.uid !== undefined && stored.uid === user.uid) {
                   if(stored.role !== undefined){
-
+                    this.router.navigateByUrl('/admin/ble-admin');
                   } else {
                     this.router.navigateByUrl('/home/dashboard', { replaceUrl: true});
                     resolve(false);

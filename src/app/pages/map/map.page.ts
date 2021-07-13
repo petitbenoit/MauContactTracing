@@ -103,16 +103,18 @@ export class MapPage implements OnInit {
       this.loadMap();
       // resp.coords.latitude
       // resp.coords.longitude
+
+       // load after map to let map container initialized
+      this.auth.user$.subscribe( user => {
+      this.userId = user.userId;
+      this.marker$.next(user.userId);
+    });
      }).catch((error) => {
         this.loadMap();
        console.log('Error getting location', error);
      });
   
-     // load after map to let map container initialized
-    this.auth.user$.subscribe( user => {
-      this.userId = user.userId;
-      this.marker$.next(user.userId);
-    });
+    
     
   }
 
@@ -267,8 +269,8 @@ export class MapPage implements OnInit {
         markers.forEach(day => {
        
           Object.keys(day).forEach( (marker:any) => {
-           console.log(marker);
-            mark = this.drawMarker(day[marker].location, day[marker].name, day[marker].timestamp, marker);
+           console.log(day[marker]);
+            mark = this.drawMarker(day[marker].location, day[marker].name, day[marker].address, day[marker].timestamp, marker);
             this.CheckInCluster.addLayer(mark);
           }) 
         })
@@ -282,7 +284,7 @@ export class MapPage implements OnInit {
      
    }
 
-   drawMarker(latlng, message, timestamp, timeKey) {
+   drawMarker(latlng, location, address, timestamp, timeKey) {
     let marker: any;
     var people = new L.Icon({ 
       iconUrl:
@@ -297,27 +299,30 @@ export class MapPage implements OnInit {
     });
     
     marker = L.marker(latlng, {
-      title: `<b>${message}</b>`,
+      title: `<b>${location}</b>`,
       icon: people
     });
     marker.bindPopup(`<b><center> ${this.datePipe.transform(timestamp, 'dd MMM yyyy, HH:mm')}</center> </b>
-    <b><center>${message}</center></b>
+    <b><center>${location}</center></b> <br>
+    ${address? 'Address: '+address+'<br>': ''} 
     Latitude: ${latlng[0]} <br> 
     Longitude: ${latlng[1]} <br>
     `);
 
     marker.on('dblclick', (e) => {
       console.log(e);
-      this.deleteCheckIn(timestamp, message, timeKey);
+      this.deleteCheckIn(timestamp, location, address, timeKey);
     });
 
     return marker;
    }
-   async deleteCheckIn(timestamp, message, timeKey) {
+   async deleteCheckIn(timestamp, message, address, timeKey) {
     const today = Intl.DateTimeFormat('fr-CA').format(new Date(timestamp));
      const alert = await this.alertCtrl.create({
        header: 'Delete check-in data',
-       message: `Location: <b>${message}</b><br> ${this.datePipe.transform(timestamp, 'dd MMM yyyy, HH:mm')}`,
+       message: `Location: <b>${message}</b><br> 
+       ${this.datePipe.transform(timestamp, 'dd MMM yyyy, HH:mm')} <br>
+      ${address? 'Address: '+address : ''} `,
        buttons: [
          {
            text: 'Cancel',
@@ -350,10 +355,15 @@ export class MapPage implements OnInit {
           {
             name: 'locationName',
             type: 'text',
-            placeholder: 'Enter location name.',
+            placeholder: 'Location name',
             attributes: {
               minLength: 2
             }
+          },
+          {
+            name: 'addr',
+            type: 'text',
+            placeholder: 'Address (if any)'
           }
         ],
         buttons: [
@@ -371,7 +381,8 @@ export class MapPage implements OnInit {
                 const val:CheckIn = {
                     location: latlng,
                     timestamp: Date.now(),
-                    name: data.locationName
+                    name: data.locationName,
+                    address: data.addr
                 };
 
                 this.saveCheckIn(val);
@@ -401,7 +412,7 @@ export class MapPage implements OnInit {
     this.afs.doc(`user/${this.userId}`)
     .collection('checkins').doc(today).set({
       [now]: data
-    }).then(() => {
+    }, { merge: true}).then(() => {
       loading.dismiss();
       this.toast.presentToast('Save successfully!', 'success');
     }, error => {
