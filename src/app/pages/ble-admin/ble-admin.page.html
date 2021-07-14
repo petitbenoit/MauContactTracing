@@ -2,9 +2,9 @@
   <ion-toolbar>
     <ion-title>BLE List</ion-title>
     <ion-buttons slot="end">
-      <ion-button >
+      <!-- <ion-button >
         <ion-icon slot="icon-only" (click)="openBLEDevices()" name="bluetooth-outline"></ion-icon>
-      </ion-button>
+      </ion-button> -->
       <ion-button fill="clear" color="danger" (click)="presentLogOutConfirm()"><ion-icon name="log-out-outline"></ion-icon></ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -25,26 +25,54 @@
     <ion-item *ngIf="userList">
       <ion-label>Users list</ion-label>
       <ion-select name="userList" placeholder="Select..." (ionChange)="loadUser($event)">
-        <ion-select-option *ngFor="let user of userList" [value]="user.id">{{user?.name}} {{user?.contact}}
+        <ion-select-option *ngFor="let user of userList" [value]="user.id">{{user?.name}}
         </ion-select-option>
       </ion-select>
     </ion-item>
+    <ion-item *ngIf="selectedUser">
+      <ion-label>Contact number</ion-label>
+      <p>{{selectedUser.contact}}</p>
+    </ion-item>
     </ion-list>
 </ion-card>
-<div *ngIf="userList" style="margin-top: 38%;z-index: 10;">
+<div *ngIf="userList" style="margin-top: 50%;z-index: 10;">
   
   <ion-card  *ngFor="let data of selectedUserDeviceList" >
     <ion-card-header>
-      <ion-card-title>{{data.address}} : {{data.name}}</ion-card-title>
+      <ion-card-title>{{data['contacts']?.userName}}</ion-card-title>
       <ion-card-subtitle>{{data.time | date:'dd MMM yyyy, HH:mm'}}</ion-card-subtitle>
     </ion-card-header>
   
     <ion-card-content>
-      <p>Data sent from: <b>{{data.deviceManufacturer}} {{data?.deviceModel}} on {{data?.devicePlatform || 'unknown platform'}} </b>({{data?.deviceUUID || 'unknown UUID'}})</p>
+      <p>Device UUID: {{data.name}}</p>
+      <p>Data sent from: <b>{{data['userDevice']?.deviceManufacturer}} {{data['userDevice']?.deviceModel}} on {{data['userDevice']?.devicePlatform || 'unknown platform'}} </b>({{data['userDevice']?.deviceUUID || 'unknown UUID'}})</p>
       <p><span style="font-weight:bold;">Transmission power (RSSI):</span> {{data.transmissionPower}} </p>
       <p><span style="font-weight:bold;"> Location:</span> <br>Latitude: {{data?.location[0]}}, <br>Longitude: {{data?.location[1]}}</p>
-      <p><span style="font-weight:bold;">Advertising (Encrypt):</span> {{data?.advertising}}</p>
-      <p><span style="font-weight:bold;">Payload (Hex):</span> {{data?.payload}}</p>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>User information</ion-card-title>
+      </ion-card-header>
+      <ion-list>
+        <ion-item>
+          <ion-label position="float">Contact number: </ion-label>
+          <p>{{data['contacts']?.userPhone}}</p>
+        </ion-item>
+        <ion-item>
+          <ion-label position="float">Email address: </ion-label>
+          <p>{{data['contacts']?.userEmail}}</p>
+        </ion-item>
+        <ion-item>
+          <ion-label position="float">Test Result: </ion-label>
+          <p>{{data['contacts']?.testResult['positive'] === true ? 'Positive' : 'Negative'}}</p>
+        </ion-item>
+
+        <ion-item *ngIf="data['contacts']?.symptoms && data['contacts']?.symptoms['private'] == 0">
+          <ion-label position="float">Symptoms: </ion-label>
+          <p>{{data['contacts']?.symptoms['consult'] === true ? 'Need to consult' : 'No symptom'}}</p>
+        </ion-item>
+      </ion-list>
+      
+    </ion-card>
     </ion-card-content>
   </ion-card>
 </div>

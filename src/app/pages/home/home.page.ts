@@ -212,6 +212,7 @@ export class HomePage implements OnInit {
     console.log(await this.bleAddService());
     console.log(await this.bleStartAdvertising());
     console.log(await this.getAdapterInfo());
+    this.startScan();
   }
 
   private async bleInit() {
@@ -299,7 +300,7 @@ export class HomePage implements OnInit {
 
       
      }).catch((error) => {
-       console.log('Error getting location', error);
+       console.log('Error getting GPS location', error);
      });
   }
 
@@ -799,16 +800,11 @@ arrayBufferToString(buffer){
 
   startScan() {
      console.log('started');
-    this.toast.presentToast('BLE scan started', 'warning');
-    let params = {
-      services: [
-       /*  "180D",
-        "180F" */
-      ],
-    }
+    this.toast.presentToast('BLE scan started', 'success');
+   
     this.bleDevices = [];
     this.bluetoothle.startScan({ services: [] }).subscribe((success) => {
-      if(success.name !== null){
+    /*   if(success.name !== null){
         console.log(success);
         if(success.advertisement && success.advertisement !== undefined  && typeof success.advertisement == 'string') {
 
@@ -818,15 +814,17 @@ arrayBufferToString(buffer){
                 // if (mfgData !== null) this.getAdvertisingData(buf);
                 // console.log('Manufacturer Data is', mfgData);
         }
-      }
+      } */
+      if (success.name)
+      console.log(success.name+" :", success.rssi);
          
-         
-      if (success.rssi && success.rssi >= -50) {
-        if (success.address && !this.deviceExist.includes(success.address)){
+      if (success.rssi && success.rssi >= -65 && success.name) {
+        console.log(success);
+        if (!this.deviceExist.includes(success.name)){
           // check in first contact + timestamp
           console.log(success);
           this.sendBLEData(success);
-          this.deviceExist.push(success.address);
+          this.deviceExist.push(success.name);
         }
       }
       
