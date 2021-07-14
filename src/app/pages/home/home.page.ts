@@ -1,3 +1,4 @@
+import { DeviceInfo } from './../../models/user';
 import { StorageService } from './../../services/storage.service';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { AlertController, ModalController, Platform, ToastController } from '@ionic/angular';
@@ -68,6 +69,46 @@ export class HomePage implements OnInit {
   userId: string;
   deviceExist: string[] = [];
 
+  advertisingParams = {
+    services: ['1234'],
+    service: '1234',
+    name: this.device.uuid || "ContactTracing",
+   
+    // manufacturerId: 0x004C,
+    // manufacturerSpecificData: "Rand",
+
+    mode: "balanced",
+    connectable: true,
+    timeout: 20000,
+    powerLevel: "high",
+    includeDeviceName: true
+  }
+
+  serviceParams = {
+    service: "1234",
+    characteristics: [
+      {
+        uuid: "ABCD",
+        permissions: {
+          read: true,
+          write: true,
+          //readEncryptionRequired: true,
+          //writeEncryptionRequired: true,
+        },
+        properties: {
+          read: true,
+          writeWithoutResponse: true,
+          write: true,
+          notify: true,
+          indicate: true,
+          //authenticatedSignedWrites: true,
+          //notifyEncryptionRequired: true,
+          //indicateEncryptionRequired: true,
+        }
+      }
+    ]
+  };
+
   constructor(
     public ble: BLE,
     private device: Device,
@@ -99,7 +140,10 @@ export class HomePage implements OnInit {
         
       });
       
-      //this.backgroundMode.enable();
+      this.runBLE();
+      
+    
+     /*  //this.backgroundMode.enable();
       this.ble.enable();
       this.ble.isLocationEnabled().then( (res)=> {
         console.log('Location enabled: ', res);
@@ -109,12 +153,12 @@ export class HomePage implements OnInit {
 
       console.log('Platform ready from', readySource);
       this.bluetoothle.enable();
-      this.bluetoothle.initialize().subscribe(ble => {
+      this.bluetoothle.initialize({request:true, statusReceiver: true, restoreKey: 'io.ionic.base'}).subscribe(ble => {
         console.log('ble', ble.status) // logs 'enabled'
         //this.setStatus(ble.status);
-
-        this.startScan();
-      });
+        this.startAdvertising();
+        //this.startScan();
+      }); */
 
      /*  const size$ = new Subject<string>();
       const queryObservable = size$.pipe(
@@ -145,6 +189,8 @@ export class HomePage implements OnInit {
         }) */
       //this.Scan();
       //this.startScan();
+     
+     // this.startScan();
     });
     //this.checkGPSPermission();
     
@@ -152,28 +198,94 @@ export class HomePage implements OnInit {
 
   ngOnInit(
   ) {
-    this.adapterInfo();
+
+    //this.adapterInfo();
     this.refresh();
     // this.api.getLatest().subscribe(data => console.log('Latest: ', data));
     // this.api.getWorldData().subscribe(data=> console.log('All', data));
+    
+  }
+
+  async runBLE() {
+    console.log(await this.bleInit());
+    console.log(await this.bleInitPeripheral());
+    console.log(await this.bleAddService());
+    console.log(await this.bleStartAdvertising());
+    console.log(await this.getAdapterInfo());
+  }
+
+  private async bleInit() {
+    return new Promise((resolve, reject) => this.bluetoothle.initialize({request:true, statusReceiver: true, restoreKey: this.device.uuid}).subscribe(val => resolve(val), error => reject(error)));
+  }
+
+  private async bleInitPeripheral() {
+    return new Promise((resolve, reject) => {
+    this.bluetoothle.initializePeripheral({
+      request: true,
+      restoreKey: "bluetoothleplugin"
+    }).subscribe(val => resolve(val), error => reject(error));
+  });
+  }
+
+  private async bleStartAdvertising() {
+    return new Promise((resolve, reject) => this.bluetoothle.startAdvertising(this.advertisingParams).then(val => resolve(val), error => reject(error)));
+  }
+
+  private async bleAddService() {
+    return new Promise((resolve, reject) => this.bluetoothle.addService(this.serviceParams).then(val => resolve(val), error => reject(error)));
+  }
+
+  private async getAdapterInfo() {
+    return new Promise((resolve, reject) => this.bluetoothle.getAdapterInfo().then(val => resolve(val), error => reject(error)));
+  }
+
+  startAdvertising() {
+    console.log('advertised uuid: ',this.device.uuid);
+    this.startScan();
+    var params = {
+      "services":['1234'], //iOS
+      "service":"1234", //Android
+      "name": this.device.uuid,
+      mode: "balanced",
+      connectable: true,
+      timeout: 20000,
+      powerLevel: "high",
+      includeDeviceName: true
+    };
+    this.bluetoothle.isAdvertising().then((res:any) => {
+      console.log('isAdvertised: ', res.isAdvertising);
+      if(!res.isAdvertising) {
+        this.bluetoothle.startAdvertising(params).then((val) => {
+          console.log(val.status);
+          this.startScan();
+        });
+      } else {
+        this.startScan();
+      }
+      
+    }); 
+    
   }
 
   sendBLEData(info) {
     this.geolocation.getCurrentPosition().then((resp) => {
       const geolocation = [resp.coords.latitude, resp.coords.longitude];
       const now = Date.now();
-      const bluetoothCollection: BluetoothInfo = {
+      const devInfo : DeviceInfo = {
         deviceManufacturer: this.device.manufacturer,
         devicePlatform: this.device.platform,
         deviceModel: this.device.model,
-        deviceUUID: this.device.uuid,
+        deviceUUID: this.device.uuid
+      };
+      const bluetoothCollection: BluetoothInfo = {
+        userDevice: devInfo,
         name: info.name || 'unknown',
         address: info.address,
         location: geolocation,
         time: now,
         transmissionPower : info.rssi,
-        advertising: info.advertisement,
-        payload: info.payload
+        // advertising: info.advertisement,
+       // payload: info.payload
       }
 
       //const today = Intl.DateTimeFormat('fr-CA').format(now);
@@ -475,6 +587,13 @@ hex_to_ascii(str1)
 	}
 	return str;
  }
+ ionViewDidEnter() {
+ 
+   //this.startScan();
+ }
+  ionViewWillLeave() {
+  this.bluetoothle.stopScan();
+ } 
 
 getAdvertisingData(buffer) {
   ////////////////////////////////////////////////////////////////////////////////
@@ -679,6 +798,8 @@ arrayBufferToString(buffer){
   }
 
   startScan() {
+     console.log('started');
+    this.toast.presentToast('BLE scan started', 'warning');
     let params = {
       services: [
        /*  "180D",
@@ -687,36 +808,39 @@ arrayBufferToString(buffer){
     }
     this.bleDevices = [];
     this.bluetoothle.startScan({ services: [] }).subscribe((success) => {
-      
-      
-      if(typeof success.advertisement !== undefined && 
-        success.advertisement !== null && success.advertisement !== '') {
+      if(success.name !== null){
+        console.log(success);
+        if(success.advertisement && success.advertisement !== undefined  && typeof success.advertisement == 'string') {
 
-        if (typeof success.advertisement == 'string') {
-            const mfgData = this.bluetoothle.encodedStringToBytes(success.advertisement);
-            const hex = Buffer.from(mfgData).toString('hex');
-            success['payload'] = hex;
-
-            if (success.rssi && success.rssi >= -50) {
-              if (success.address && !this.deviceExist.includes(success.address)){
-                // check in first contact + timestamp
-                console.log(success);
-                this.sendBLEData(success);
-                this.deviceExist.push(success.address);
-              } else {
-                // checkinInternal timestamp interval 15 second
-                // check out // update latest timestamp
-                // if date.now - initial checkin timestamp < 16min checkout 
-
-              }
-            }
+        var mfgData = this.bluetoothle.encodedStringToBytes(success.advertisement);
+                const hex = Buffer.from(mfgData).toString('hex');
+                console.log('bluetoothle hex: ', hex);
+                // if (mfgData !== null) this.getAdvertisingData(buf);
+                // console.log('Manufacturer Data is', mfgData);
         }
-        this.ngZone.run(() => {
-          this.pushToArray(this.bleDevices, success);
-        });
       }
+         
+         
+      if (success.rssi && success.rssi >= -50) {
+        if (success.address && !this.deviceExist.includes(success.address)){
+          // check in first contact + timestamp
+          console.log(success);
+          this.sendBLEData(success);
+          this.deviceExist.push(success.address);
+        }
+      }
+      
+      this.ngZone.run(() => {
+        this.pushToArray(this.bleDevices, success);
+      });
+      
     }, (error) => {
       console.log("error: " + JSON.stringify(error));
+      this.toast.presentToast(error.message, 'warning');
+      console.log('stopped');    
+      this.toast.presentToast('Restart BLE scan', 'warning');  
+      this.bluetoothle.stopScan().then(() => this.startScan());
+      
     })
   }
 
@@ -824,8 +948,8 @@ arrayBufferToString(buffer){
     retrieveConnected() {
       let params = {
         "services": [
-          /* "180D",
-          "180F" */
+           //"123D",
+          //"180F" 
         ]
       }
   

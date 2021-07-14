@@ -13,7 +13,27 @@
       from { background-position: 0 0; }
       to { background-position: 100% 0; }
     }
-  
+    .title {
+      z-index: 3;
+      width: 100%;
+      position: absolute;
+      font-size: xxx-large;
+      top: -120%;
+      font-family: fantasy;
+      padding: 10%;
+    }
+    .title-logo {
+      right: -20%;
+      top: 0%;
+      padding: 20%;
+      z-index: 2;
+      background: url(../../../assets/img/logoicon.svg) no-repeat transparent;
+      background-size: 50%;
+      width: 140px;
+      height: 140px;
+      position: absolute;
+    }
+
     .splash-info {
       position: relative;
       z-index: 2;

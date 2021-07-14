@@ -1,7 +1,7 @@
 import { StorageService } from './storage.service';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { Injectable } from '@angular/core';
-import { BluetoothInfo, User } from './../models/user';
+import {  User } from './../models/user';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthConstants } from './../config/auth-constants';

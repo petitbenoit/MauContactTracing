@@ -1,10 +1,11 @@
-import { User } from './../../models/user';
+import { DeviceInfo, User } from './../../models/user';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthenticationService } from './../../services/authentication.service';
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { TestResult } from 'src/app/models/user';
+import { Device } from '@ionic-native/device/ngx';
 
 @Component({
   selector: 'app-profile-edit',
@@ -28,7 +29,8 @@ export class ProfileEditPage implements OnInit {
     private afs: AngularFirestore,
     private loadingCtrl: LoadingController,
     private toastr: ToastController,
-    private router: Router  
+    private router: Router,
+    private device: Device  
   ) { 
     this.auth.user$.subscribe(user => {
       this.userId = user.userId;
@@ -65,7 +67,13 @@ export class ProfileEditPage implements OnInit {
     this.test.updatedAt = Date.now();
     if (this.testDateDisplay !== null)
       this.test.date = new Date(this.testDateDisplay).getTime();
-
+      
+    const deviceInfos: DeviceInfo = {
+      deviceManufacturer: this.device.manufacturer,
+      deviceModel: this.device.model,
+      devicePlatform: this.device.platform,
+      deviceUUID: this.device.uuid
+    }
     const user : User = {
       userId: this.userId,
       userName: this.name,
@@ -73,7 +81,8 @@ export class ProfileEditPage implements OnInit {
       userPhone: this.phone,
       createdAt: this.createdAt,
       updatedAt: Date.now(),
-      testResult: this.test
+      testResult: this.test,
+      deviceInfo: deviceInfos
     };
     
     this.afs.collection('user').doc(this.userId).set(

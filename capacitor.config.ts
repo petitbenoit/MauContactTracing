@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'ionic-app-base',
+  appId: 'mu.smart.contactTracing',
+  appName: 'ContactTracing',
   webDir: 'www',
   bundledWebRuntime: false,
   cordova: {

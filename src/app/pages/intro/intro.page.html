@@ -1,24 +1,42 @@
 <ion-content>
+  <div class="splash-logo"></div>
+  <div class="splash-info"><h2>Contact Tracing</h2></div>
   <ion-slides pager="true">
  
     <!-- Slide 1 -->
     <ion-slide>
-      <ion-text color="light">
-        <img src="https://i1.wp.com/ionicacademy.com/wp-content/uploads/2019/10/async-code-course.png">
-        <h1>Hey there!</h1>
-        <p>This is an epic app because...</p>
-        <ion-button (click)="next()" fill="outline" color="light">Next</ion-button>
-      </ion-text>
+      <ion-card class="ion-padding">
+        <ion-text color="light">
+          <img src="../../../assets/img/icon1.svg">
+          <h1>Wear Mask</h1>
+          <p>When go outside wear mask always.</p>
+          <ion-button (click)="next()" fill="outline" color="light">Next</ion-button>
+        </ion-text>
+    </ion-card>
+    </ion-slide>
+
+     <!-- Slide 2 -->
+     <ion-slide>
+       <ion-card class="ion-padding">
+        <ion-text color="light">
+          <img src="../../../assets/img/icon2.svg">
+          <h1>Wash Hand</h1>
+          <p>Wash your hand about 20 minute regularly.</p>
+          <ion-button (click)="next()" fill="outline" color="light">Next</ion-button>
+        </ion-text>
+    </ion-card>
     </ion-slide>
  
     <!-- Slide 2 -->
     <ion-slide>
-      <ion-text color="light">
-        <img src="https://i1.wp.com/ionicacademy.com/wp-content/uploads/2020/06/ionic-everywhere-course.png">
-        <h1>It's Ionic!</h1>
-        <p>... it shows all the basics you need!</p>
-        <ion-button (click)="start()" fill="outline" color="light">Start</ion-button>
-      </ion-text>
+      <ion-card class="ion-padding">
+        <ion-text color="light">
+          <img src="../../../assets/img/icon3.svg">
+          <h1>Stay home</h1>
+          <p>To avoid corona we need to stay home.</p>
+          <ion-button (click)="start()" fill="outline" color="light">Start</ion-button>
+        </ion-text>
+      </ion-card>
     </ion-slide>
  
   </ion-slides>

@@ -9,6 +9,7 @@ export interface User {
     updatedAt?: number;
     symptoms?: Symptoms;
     testResult?: TestResult;
+    deviceInfo: DeviceInfo;
 }
 
 export interface CheckIn {
@@ -39,16 +40,20 @@ export interface TestResult {
     updatedAt?: number;
 }
 
-export interface BluetoothInfo {
+export interface DeviceInfo {
     deviceManufacturer: string;
-    devicePlatform: string;
     deviceModel: string;
+    devicePlatform: string;
     deviceUUID: string;
-    name?: string;
-    address: string;
+}
+
+export interface BluetoothInfo {
+    userDevice: DeviceInfo;
+    name: string;
+    address?: string;
     location: Array<number>;
     time: number;
     transmissionPower : number;
-    advertising: string;
-    payload: string;
+    // advertising: string;
+   // payload: string;
 }

@@ -1,10 +1,11 @@
-import { User } from './../../models/user';
+import { DeviceInfo, User } from './../../models/user';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { TestResult } from 'src/app/models/user';
+import { Device } from '@ionic-native/device/ngx';
 
 @Component({
   selector: 'app-register',
@@ -28,7 +29,8 @@ export class RegisterPage implements OnInit {
     private afauth: AngularFireAuth,
     private router: Router,
     private loadingCtrl: LoadingController,
-    private toastr: ToastController
+    private toastr: ToastController,
+    private device: Device
   ) { 
     /* Object.keys(this.test).map((key) => {
       if (key === 'positive') {
@@ -68,15 +70,24 @@ this.router.navigate(['/login']);
         this.test.createdAt = Date.now();
         if (this.testDateDisplay !== null)
           this.test.date = new Date(this.testDateDisplay).getTime();
+          
+          let deviceInfos: DeviceInfo = {
+            deviceManufacturer: this.device.manufacturer,
+            deviceModel: this.device.model,
+            devicePlatform: this.device.platform,
+            deviceUUID: this.device.uuid
+          }
 
           const user: User = {
-            'userId': data.user.uid,
-            'userName': this.name,
-            'userEmail': this.email,
-            'userPhone': this.phone,
-            'createdAt': Date.now(),
-            'testResult': this.test
+            userId: data.user.uid,
+            userName: this.name,
+            userEmail: this.email,
+            userPhone: this.phone,
+            createdAt: Date.now(),
+            testResult: this.test,
+            deviceInfo: deviceInfos
           };
+
           this.afs.collection('user').doc(data.user.uid).set(user)
           .then(() => {
            

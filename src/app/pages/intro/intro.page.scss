@@ -1,9 +1,36 @@
 ion-content {
     --background: #0081ca;
 }
- 
+
+ion-card {
+    --background: rgba(255, 255, 255, 0.384);
+}
+
 ion-slides {
     height: 100%;
     --bullet-background-active: #fff;
     --bullet-background: #000;
 }
+
+.splash-logo {
+    margin: 5% 41%;
+    background: url('../../../assets/img/logoicon.svg') no-repeat transparent;
+    background-size: 50%;
+    width: 140px;
+    height: 140px;
+    position: absolute;
+  }
+
+  .splash-info {
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+    padding: 16% 0px;
+    text-align: center;
+  }
+  
+  ion-title {
+    font-size: xxx-large;
+    font-family: monospace;
+    font-weight: bold;
+  }
