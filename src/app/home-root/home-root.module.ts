@@ -15,8 +15,8 @@ import { HomeRootPage } from './home-root.page';
     CommonModule,
     FormsModule,
     IonicModule,
-  // HomeRootPageRoutingModule,
-   HomeRootRouter,
+    HomeRootPageRoutingModule,
+   // HomeRootRouter,
     TabsPageRoutingModule
   ],
   declarations: [HomeRootPage]

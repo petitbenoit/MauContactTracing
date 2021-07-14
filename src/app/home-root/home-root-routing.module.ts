@@ -6,10 +6,10 @@ import { HomeRootPage } from './home-root.page';
 import { HomeGuard } from '../guards/home.guard';
 
 const routes: Routes = [
-  {
-    path: 'home',
-    component: HomeRootPage,
-    canActivate: [HomeGuard],
+    {
+        path: 'home',
+        component: HomeRootPage,
+        canActivate: [HomeGuard],
         children: [
             {
                 path: 'tabs',
@@ -53,27 +53,30 @@ const routes: Routes = [
                 loadChildren: () => import('../pages/news/news.module').then( m => m.NewsPageModule)
             },
             {
-              path: 'change-password',
-              loadChildren: () =>
+                path: 'change-password',
+                loadChildren: () =>
                   import('../pages/change-password/change-password.module').then(
                       m => m.ChangePasswordPageModule
                   )
             },
             {
+                path: 'about',
+                loadChildren: () =>
+                  import('../pages/about/about.module').then(
+                      m => m.AboutPageModule
+                  )
+            },
+            {
                 path: '',
-                redirectTo: 'tabs',
+                redirectTo: 'home/dashboard',
                 pathMatch: 'full'
-            }
+            } 
         ]
-  },
-  {
-    path: '',
-    redirectTo: 'home/tabs',
-    pathMatch: 'full'
-  },
+    },
     {
-        path: 'tabs',
-        loadChildren: () => import('../tabs/tabs.module').then( m => m.TabsPageModule)
+        path: '',
+        redirectTo: 'home/dashboard',
+        pathMatch: 'full'
     } 
 ];
 

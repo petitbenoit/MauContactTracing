@@ -27,6 +27,8 @@ export class BleAdminPage implements OnInit {
   selectedTestDate: number;
   selectedUser: any;
   usersByid: any;
+  selectedUserId: any;
+
   constructor(
     // private http: HttpClient
     private afs: AngularFirestore,
@@ -75,7 +77,12 @@ export class BleAdminPage implements OnInit {
       this.user$.subscribe(user => { // subscribe to users
         console.log(user);
         this.userList = user;
-        this.usersByid = Object.keys(user).map( key => { console.log(key)});
+        let json = {};
+        Object.keys(user).map( key => { 
+          json[user[key].id] = user[key];
+        });
+        this.usersByid = json;
+        
       })
 
 
@@ -85,7 +92,7 @@ export class BleAdminPage implements OnInit {
   ngOnInit() {}
 
   async refresh(event?) { // refresh users 
-    
+    this.selectedUserId = null;
     this.user$.subscribe(user => { // subscribe to users
       console.log(user);
       this.userList = user;
@@ -102,7 +109,8 @@ export class BleAdminPage implements OnInit {
   loadUser(e) {
     console.log(e.detail.value)
     if(e !== undefined && e.detail.value !== undefined && e.detail.value.length > 0) {
-      let selectDate = this.usersByid[e.detail.value].testDate;
+      console.log(this.usersByid);
+      let selectDate = this.usersByid[e.detail.value]?.testDate;
       this.selectedUser = this.usersByid[e.detail.value];
       console.log(this.selectedUser);
       if (!isNaN(selectDate)) {
@@ -117,6 +125,7 @@ export class BleAdminPage implements OnInit {
 
   getUserByStatus(status) {
     console.log(status);
+    this.selectedUserId = null;
     this.initUsersByStatus(status);
     this.user$.subscribe( users => {
       this.userList = users;
@@ -126,6 +135,7 @@ export class BleAdminPage implements OnInit {
       });
       this.usersByid = json;
       this.selectedUserDeviceList = null;
+      this.selectedUser = null;
       console.log(this.usersByid);
     })
   }

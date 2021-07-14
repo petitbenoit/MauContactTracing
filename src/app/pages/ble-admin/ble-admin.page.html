@@ -24,7 +24,7 @@
     </ion-item>
     <ion-item *ngIf="userList">
       <ion-label>Users list</ion-label>
-      <ion-select name="userList" placeholder="Select..." (ionChange)="loadUser($event)">
+      <ion-select name="userList" placeholder="Select..." [(ngModel)]="selectedUserId" (ionChange)="loadUser($event)">
         <ion-select-option *ngFor="let user of userList" [value]="user.id">{{user?.name}}
         </ion-select-option>
       </ion-select>
@@ -35,7 +35,7 @@
     </ion-item>
     </ion-list>
 </ion-card>
-<div *ngIf="userList" style="margin-top: 50%;z-index: 10;">
+<div *ngIf="userList" style="margin-top: 53%;z-index: 10;">
   
   <ion-card  *ngFor="let data of selectedUserDeviceList" >
     <ion-card-header>

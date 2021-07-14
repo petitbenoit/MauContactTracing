@@ -208,13 +208,50 @@ export class HomePage implements OnInit {
 
   async runBLE() {
     console.log(await this.bleInit());
+    await this.requestBLE();
     console.log(await this.bleInitPeripheral());
     console.log(await this.bleAddService());
     console.log(await this.bleStartAdvertising());
     console.log(await this.getAdapterInfo());
     this.startScan();
   }
+  private async requestBLE() {
+    return new Promise( resolve => resolve( 
+      this.bluetoothle.hasPermission().then((permission) => {
 
+        console.log('permission ? :', permission);
+        if (!permission.hasPermission) {
+          this.bluetoothle.requestPermission().then(req => {
+            console.log('req permission ? :', req)
+            if (req.requestPermission) {
+              this.bluetoothle.enable();
+              this.ble.isLocationEnabled().then( (res : any)=> {
+                console.log('Location enabled: ', res);
+                if (res !== 'OK')
+                this.toast.presentToast('Enable GPS location.', 'warning');
+              }); 
+            } else {
+              this.toast.presentToast('GPS Permission denied.', 'danger');
+            }
+          });
+        } else {
+          this.bluetoothle.enable();
+          this.ble.isLocationEnabled().then( (loc : any)=> {
+            console.log('Location enabled: ', loc);
+            if(loc !== 'OK') {
+              this.bluetoothle.requestLocation().then((req) => {
+                console.log('req location ', req);
+                this.toast.presentToast('Enable GPS location', 'warning');
+              })
+            } else { 
+              this.startScan();
+            }
+          }); 
+        }
+      })
+
+    ))  // end of req has permission request
+  }
   private async bleInit() {
     return new Promise((resolve, reject) => this.bluetoothle.initialize({request:true, statusReceiver: true, restoreKey: this.device.uuid}).subscribe(val => resolve(val), error => reject(error)));
   }

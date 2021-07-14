@@ -40,6 +40,7 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 // import { StatusBar } from "@ionic-native/status-bar/ngx";
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FilterPipe } from './pipes/filter.pipe';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 
 @NgModule({
   declarations: [AppComponent, FilterPipe],
@@ -66,6 +67,7 @@ import { FilterPipe } from './pipes/filter.pipe';
     LocationAccuracy,
     BluetoothLE,
     BLE, 
+    AppMinimize,
     // StatusBar,
     // SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
